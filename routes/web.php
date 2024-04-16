@@ -20,3 +20,10 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/time_lists', [App\Http\Controllers\TimeListController::class, 'index'])->name('time_lists.index');
+
+Route::get('/time_lists/create', [App\Http\Controllers\TimeListController::class, 'create'])->name('time_lists.create');
+
+Route::post('/time_lists', [App\Http\Controllers\TimeListController::class, 'store'])->name('time_lists.store');
+ 
