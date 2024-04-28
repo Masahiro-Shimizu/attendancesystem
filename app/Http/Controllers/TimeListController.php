@@ -8,13 +8,26 @@ class TimeListController extends Controller
 {
     public function index()
     {
-        $user = \Auth::user();
-        $time_list = $user->time_lists()->whereDate('created_at', date('Y-m-d'))->first();
-        if ($time_list) {
+        $today = Carbon::today();
+        $month = intval($today->month);
+        $day = intval($today->day);
+
+    }
+
+    public function store()
+    {
+        $user = auth()->user();
+        $today = $user->time_lists()->whereDate('created_at', date('Y-m-d'))->first();
+        if ($today) {
             return redirect()->route('time_lists.index')->with('flash_message', '既に打刻済みです。');
         }
-        $request->user()->time_lists()->create([]);
+        $user->time_lists()->create([]);
         return redirect()->route('time_lists.index')->with('flash_message', '打刻完了しました。');
+    }
+
+    public function lists()
+    {
+        
     }
 
 }
