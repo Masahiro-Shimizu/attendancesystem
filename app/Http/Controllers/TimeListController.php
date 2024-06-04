@@ -12,6 +12,9 @@ class TimeListController extends Controller
         $month = intval($today->month);
         $day = intval($today->day);
 
+        //当日の勤怠を取得
+        $items = Time::GetMonthAttendance($month)->GetDayAttendance($day)->get();
+        return view('time.index',['item'=>$items]);
     }
 
     public function store()
