@@ -11,19 +11,27 @@
                         <dt class="col-sm-3">名前</dt>
                         <dt class="col-sm-9">{{ Auth::user()->name }}</dt>
                         <dt class="col-sm-3">ログインID</dt>
-                        <dt class="col-sm-9">{{ Auth::user()->loginid }}</dt>
+                        <dt class="col-sm-9">{{ Auth::user()->id }}</dt>
                     </dl>
-                    <div class="button-form">
+                    @if (session('status'))
+                        <div class="alert alert-success" id="popup-message">{{ session('status') }}
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger" id="popup-message">{{ session('error') }}
+                        </div>
+                    @endif
+                    <div class="button-form">                        
                         <ul>
                             <li>
-                                <form action="{{ route('time_lists.index') }}" method="POST">
+                                <form action="{{ route('punch-in') }}" method="POST">
                                     @csrf
                                     @method('POST')
                                     <button type="submit" class="btn btn-primary">出勤</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{ route('time_lists.index') }}" method="POST">
+                                <form action="{{ route('punch-out') }}" method="POST">
                                     @csrf
                                     @method('POST')
                                     <button type="submit" class="btn btn-success">退勤</button>
@@ -32,10 +40,19 @@
                         </ul>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
-
+@endsection
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const popupMessage = document.getElementById('popup-message');
+        if(popupMessage){
+            alert(popupMessage.textContent);
+            popupMessage.remove();
+        }
+    });
+</script>
 @endsection

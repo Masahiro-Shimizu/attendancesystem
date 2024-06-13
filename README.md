@@ -65,3 +65,10 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 # attendancesystem
+
+middlewareの使い方
+https://laratech.jp/posts/laravel-routing-auth/
+
+Mass Assignment　とは(laravel)
+https://qiita.com/mutturiprin/items/fd542128355f08727e45
+https://qiita.com/yyy752/items/820260163d4883efb132
