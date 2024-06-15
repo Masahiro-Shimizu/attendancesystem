@@ -15,7 +15,7 @@
     <!--<link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">-->
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <!--<script src="{{ asset('js/app.js') }}" defer></script>-->
 
 </head>
 <body>
@@ -80,5 +80,10 @@
     </div>
 
     @yield('scripts')
+    <script>
+        $.ajaxSetup({
+            headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
+        });
+    </script>
 </body>
 </html>

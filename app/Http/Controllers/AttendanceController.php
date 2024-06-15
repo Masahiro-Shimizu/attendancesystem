@@ -29,7 +29,7 @@ class AttendanceController extends Controller
             'punchin' => Carbon::now(),
         ]);
 
-        return redirect()->back()->with('status', '出勤しました');
+        return response()->json(['message' => '出勤しました']);
     }
     
     public function punchOut()
@@ -44,9 +44,9 @@ class AttendanceController extends Controller
             $attendances->update([
                 'punchout' => Carbon::now(),
             ]);
-            return redirect()->back()->with('status','退勤しました');
+            return response()->json(['message' => '退勤しました']);
         }
 
-        return redirect()->back()->with('error','No active clock in record found');
+        return response()->json(['message' => '処理に失敗しました'], 400);
     }
 }

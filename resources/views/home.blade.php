@@ -46,13 +46,49 @@
 </div>
 @endsection
 @section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const popupMessage = document.getElementById('popup-message');
-        if(popupMessage){
-            alert(popupMessage.textContent);
-            popupMessage.remove();
-        }
+    $(document).ready(function()
+    {
+        $('#punchin-form').on('submit',function(event){event.prevenDefault();
+        $.ajax({
+            url:'{{ route("punch-in") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            succsess:function(response){
+                showMesseagee(response.message);
+            },
+            error:function(xhr){
+
+            showMessage('An error occurred.')}
+        });
+    });
+
+    $('#punchout-form').on('submit',function(event){
+        event.preventDefault();
+
+        $.ajax({
+            url:'{{ route("punch-out") }}',
+            method:'POST',
+            data: $(this).serialize(),
+            success: function(response){
+                showMessage(response.message);
+            },
+            error: function(xhr){
+                showMessage('An error occurred.');
+            }
+        });
+    });
+
+    function showMessage(message){
+        const popupMessage = $('#popup-message');
+        popupMessage.text(message);
+        popupMessage.show();
+
+        setTimeout(function(){
+            popupMessage.fadeOut();
+        }, 3000); //3秒後にポップアップをフェードアウト
+    }
     });
 </script>
 @endsection
