@@ -26,7 +26,7 @@ class AttendanceController extends Controller
     {
         $attendances = Attendance::create([
             'user_id' => Auth::id(),
-            'punchin' => Carbon::now(),
+            'punchin' => Carbon::now('Asia/Tokyo'),
         ]);
 
         return response()->json(['message' => '出勤しました']);
@@ -42,7 +42,7 @@ class AttendanceController extends Controller
         if($attendances)
         {
             $attendances->update([
-                'punchout' => Carbon::now(),
+                'punchout' => Carbon::now('Asia/Tokyo'),
             ]);
             return response()->json(['message' => '退勤しました']);
         }

@@ -9,31 +9,22 @@
                 <div class="card-body">
                     <dl class="row">
                         <dt class="col-sm-3">名前</dt>
-                        <dt class="col-sm-9">{{ Auth::user()->name }}</dt>
+                        <dd class="col-sm-9">{{ Auth::user()->name }}</dd>
                         <dt class="col-sm-3">ログインID</dt>
-                        <dt class="col-sm-9">{{ Auth::user()->id }}</dt>
+                        <dd class="col-sm-9">{{ Auth::user()->id }}</dd>
                     </dl>
-                    @if (session('status'))
-                        <div class="alert alert-success" id="popup-message">{{ session('status') }}
-                        </div>
-                    @endif
-                    @if (session('error'))
-                        <div class="alert alert-danger" id="popup-message">{{ session('error') }}
-                        </div>
-                    @endif
+                    <div id="popup-message" style="display: none;" class="alert"></div>
                     <div class="button-form">                        
                         <ul>
                             <li>
-                                <form action="{{ route('punch-in') }}" method="POST">
+                                <form id="punchin-form" method="POST">
                                     @csrf
-                                    @method('POST')
                                     <button type="submit" class="btn btn-primary">出勤</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{ route('punch-out') }}" method="POST">
+                                <form id="punchout-form" method="POST">
                                     @csrf
-                                    @method('POST')
                                     <button type="submit" class="btn btn-success">退勤</button>
                                 </form>
                             </li>
@@ -45,50 +36,63 @@
     </div>
 </div>
 @endsection
+
 @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function()
-    {
-        $('#punchin-form').on('submit',function(event){event.prevenDefault();
-        $.ajax({
-            url:'{{ route("punch-in") }}',
-            method: 'POST',
-            data: $(this).serialize(),
-            succsess:function(response){
-                showMesseagee(response.message);
-            },
-            error:function(xhr){
-
-            showMessage('An error occurred.')}
-        });
-    });
-
-    $('#punchout-form').on('submit',function(event){
-        event.preventDefault();
-
-        $.ajax({
-            url:'{{ route("punch-out") }}',
-            method:'POST',
-            data: $(this).serialize(),
-            success: function(response){
-                showMessage(response.message);
-            },
-            error: function(xhr){
-                showMessage('An error occurred.');
+    $(document).ready(function() {
+        // CSRFトークンの設定
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    });
 
-    function showMessage(message){
-        const popupMessage = $('#popup-message');
-        popupMessage.text(message);
-        popupMessage.show();
+        $('#punchin-form').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '{{ route("punch-in") }}',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    showMessage(response.message);
+                },
+                error: function(xhr) {
+                    showMessage('An error occurred.');
+                }
+            });
+        });
 
-        setTimeout(function(){
-            popupMessage.fadeOut();
-        }, 3000); //3秒後にポップアップをフェードアウト
-    }
+        $('#punchout-form').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '{{ route("punch-out") }}',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    showMessage(response.message);
+                },
+                error: function(xhr) {
+                    showMessage('An error occurred.');
+                }
+            });
+        });
+
+        function showMessage(message) {
+            const popupMessage = $('#popup-message');
+            popupMessage.removeClass('alert-success alert-danger');
+            if(message.includes('error')){
+                popupMessage.addClass('alert-danger');
+            } else {
+                popupMessage.addClass('alert-success');
+            }
+            popupMessage.text(message);
+            popupMessage.show();
+
+            setTimeout(function() {
+                popupMessage.fadeOut();
+            }, 3000); // 3秒後にポップアップをフェードアウト
+        }
     });
 </script>
 @endsection
