@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Time;
 use App\Models\Attendance;
 use Illuminate\Database\DBAL\TimestampType;
 use Illuminate\Support\Facades\Auth;
