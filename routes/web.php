@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AttendanceController;
-use App\Models\Attendance;
+use App\Http\Controllers\TimesController;
+use App\Models\Times;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,17 +21,29 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::middleware(['admin'])->group(function () {
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register']);
+});
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::middleware(['auth'])->group(function()
-{
-    Route::get('/punch-in',[App\Http\Controllers\AttendanceController::class,'punchIn'])->name('punch-in');
-    Route::post('/punch-in',[App\Http\Controllers\AttendanceController::class,'punchIn'])->name('punch-in');
-    Route::get('/punch-out',[App\Http\Controllers\AttendanceController::class,'punchOut'])->name('punch-out');
-    Route::post('/punch-out',[App\Http\Controllers\AttendanceController::class,'punchOut'])->name('punch-out');
+
+// 認証が必要なルートをグループ化
+Route::middleware(['auth'])->group(function() {
+    // 勤怠管理関連のルート
+    Route::get('/times', [App\Http\Controllers\TimesController::class, 'index'])->name('times.index');
+    
+    // 出勤と退勤のPOSTリクエストのみ
+    //Route::get('/punch-in', [App\Http\Controllers\TimesController::class, 'punchIn'])->name('punch-in');
+    Route::post('/punch-in', [App\Http\Controllers\TimesController::class, 'punchIn'])->name('punch-in');
+    //Route::get('/punch-out', [App\Http\Controllers\TimesController::class, 'punchOut'])->name('punch-out');
+    Route::post('/punch-out', [App\Http\Controllers\TimesController::class, 'punchOut'])->name('punch-out');
+    Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
 });
+
 
 //まずは一通り形にしてみる
 //新規ユーザー登録は管理者権限で実行出来るようにする

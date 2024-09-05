@@ -14,11 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('times', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('user_id');
-            $table->dateTime('punchIn');
-            $table->timestamps();
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->dateTime('punchIn')->nullable();
+            $table->dateTime('punchOut')->nullable();
+            $table->timestamps(); 
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
+        
     }
 
     /**
