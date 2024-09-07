@@ -32,10 +32,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 // 認証が必要なルートをグループ化
 Route::middleware(['auth'])->group(function() {
-    // 勤怠管理関連のルート
+    //勤怠管理関連のルート
     Route::get('/times', [App\Http\Controllers\TimesController::class, 'index'])->name('times.index');
     
-    // 出勤と退勤のPOSTリクエストのみ
+    //出勤と退勤のPOSTリクエストのみ
     //Route::get('/punch-in', [App\Http\Controllers\TimesController::class, 'punchIn'])->name('punch-in');
     Route::post('/punch-in', [App\Http\Controllers\TimesController::class, 'punchIn'])->name('punch-in');
     //Route::get('/punch-out', [App\Http\Controllers\TimesController::class, 'punchOut'])->name('punch-out');
@@ -59,5 +59,7 @@ Route::middleware(['auth'])->group(function() {
 
 //7/25
 //ポップアップ表示ではなく、枠の中に文言で表示にする
+
+
 
 

@@ -80,7 +80,7 @@ class TimesController extends Controller
 
         //    $attendance->update([
         //        'punchOut' => Carbon::now('Asia/Tokyo'),
-         //   ]);
+        //   ]);
             return response()->json(['message' => '退勤しました']);
         }
 
