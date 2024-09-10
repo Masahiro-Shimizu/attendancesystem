@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/punch-out', [App\Http\Controllers\TimesController::class, 'punchOut'])->name('punch-out');
     Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
+    Route::get('/times/{id}',[App\Http\Controllers\TimesController::class, 'detail'])->name('times.detail');
 });
 
 

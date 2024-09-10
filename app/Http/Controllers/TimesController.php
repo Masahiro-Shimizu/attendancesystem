@@ -86,4 +86,13 @@ class TimesController extends Controller
 
         return response()->json(['message' => '退勤処理に失敗しました'], 400);
     }
+
+    public function detail($id)
+    {
+        //特定の打刻データを取得
+        $time = Time::findOrFail($id);
+
+        //詳細ページのビューにデータを渡す
+        return view('detail',compact('time'));
+    }
 }
