@@ -72,3 +72,5 @@ https://laratech.jp/posts/laravel-routing-auth/
 Mass Assignment　とは(laravel)
 https://qiita.com/mutturiprin/items/fd542128355f08727e45
 https://qiita.com/yyy752/items/820260163d4883efb132
+
+https://github.com/Masahiro-Shimizu/attendancesystem/issues/1#issuecomment-2362217470
