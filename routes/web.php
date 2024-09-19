@@ -42,7 +42,12 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/punch-out', [App\Http\Controllers\TimesController::class, 'punchOut'])->name('punch-out');
     Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
+    //詳細画面
     Route::get('/times/{id}',[App\Http\Controllers\TimesController::class, 'detail'])->name('times.detail');
+    
+    //編集画面
+    Route::get('/times/edit/{id}',[App\Http\Controllers\TimesController::class, 'edit'])->name('times.edit');
+    Route::put('/times/{id}',[App\Http\Controllers\TimesController::class, 'update'])->name('times.update');
 });
 
 

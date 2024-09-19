@@ -95,4 +95,44 @@ class TimesController extends Controller
         //詳細ページのビューにデータを渡す
         return view('detail',compact('time'));
     }
+
+    public function edit($id)
+    {
+        //特定の打刻データを取得
+        $time = Time::findOrFail($id);
+
+        // punchIn, punchOut を Carbon に変換
+        $time->punchIn = Carbon::parse($time->punchIn);
+        if ($time->punchOut) {
+        $time->punchOut = Carbon::parse($time->punchOut);
+        }
+        
+        //詳細ページのビューにデータを渡す
+        return view('edit',compact('time'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        //バリデーション
+        $request->validate([
+            'punchIn' => 'required|date',
+            'punchOut' => 'nullable|date',
+            'comment' => 'nullable|string|max:255',
+            'method' => 'required|string',
+        ]);
+
+        //更新する打刻データを取得
+        $time = Time::findOrFail($id);
+
+        //データを更新
+        $timae = update([
+            'punchIn' => $request->punchIn,
+            'punchOut' => $request->punchOut,
+            'method' => $request->method,
+            'comment' => $request->comment,
+        ]);
+
+        //更新後のリダイレクト
+        return redirect()->route('times.show', $time->id)->with('success', '打刻データが更新されました');
+    }
 }

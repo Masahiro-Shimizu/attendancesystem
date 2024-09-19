@@ -62,6 +62,9 @@
                                 <button class="btn btn-secondary btn-sm">
                                     <a href="{{ route('times.detail', $records->first()->id) }}" style="color:white;">詳細</a>
                                 </button>
+                                <button class="btn btn-secondary btn-sm">
+                                <a href="{{ route('times.edit', $records->first()->id) }}" style="color:white;">編集</a>
+                                </button>
                             </li>
                             @endforeach
                         </ul>
