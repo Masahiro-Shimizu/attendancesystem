@@ -73,4 +73,4 @@ Mass Assignment　とは(laravel)
 https://qiita.com/mutturiprin/items/fd542128355f08727e45
 https://qiita.com/yyy752/items/820260163d4883efb132
 
-https://github.com/Masahiro-Shimizu/attendancesystem/issues/1#issuecomment-2362217470
+https://github.com/user-attachments/assets/48bb9146-3d25-4712-bb71-b8dc78adfd76
