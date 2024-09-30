@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 class Time extends Model
 {
     protected $table = 'times';
-    protected $fillable = ['user_id','punchIn','punchOut'];
+    protected $fillable = ['user_id','punchIn','punchOut', 'comments'];
 
     /**
      * スコープ：指定した月の勤怠データを取得

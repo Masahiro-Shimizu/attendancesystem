@@ -44,8 +44,8 @@
 
                     <!-- コメント -->
                     <div class="form-group">
-                            <label for="comment">コメント</label>
-                            <textarea name="comment" class="form-control" rows="3">{{ $time->comment }}</textarea>
+                            <label for="comments">コメント</label>
+                            <textarea name="comments" class="form-control" rows="3">{{ old('comments', $time->comments) }}</textarea>
                         </div>
 
                     <button type="submit" class="btn btn-primary">更新</button>

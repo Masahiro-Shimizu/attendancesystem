@@ -106,7 +106,7 @@ class TimesController extends Controller
         if ($time->punchOut) {
         $time->punchOut = Carbon::parse($time->punchOut);
         }
-        
+
         //詳細ページのビューにデータを渡す
         return view('edit',compact('time'));
     }
@@ -117,7 +117,7 @@ class TimesController extends Controller
         $request->validate([
             'punchIn' => 'required|date',
             'punchOut' => 'nullable|date',
-            'comment' => 'nullable|string|max:255',
+            'comments' => 'nullable|string|max:255',
             'method' => 'required|string',
         ]);
 
@@ -125,14 +125,17 @@ class TimesController extends Controller
         $time = Time::findOrFail($id);
 
         //データを更新
-        $timae = update([
-            'punchIn' => $request->punchIn,
-            'punchOut' => $request->punchOut,
-            'method' => $request->method,
-            'comment' => $request->comment,
+        $time->update([
+            'punchIn' => $request->input('punchIn'),
+            'punchOut' => $request->input('punchOut'),
+            'method' => $request->input('method'),
+            'comments' => $request->input('comments'),
         ]);
 
+        // リクエストからコメントを含む他のフィールドも更新
+        $time->update($request->only(['punchIn', 'punchOut', 'comments']));
+
         //更新後のリダイレクト
-        return redirect()->route('times.show', $time->id)->with('success', '打刻データが更新されました');
+        return redirect()->route('times.detail', $time->id)->with('success', '打刻データが更新されました');
     }
 }

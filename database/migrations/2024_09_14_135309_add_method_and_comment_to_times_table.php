@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('times', function (Blueprint $table) {
             $table->string('method')->default('自動'); // 打刻方法
-            $table->string('comment')->nullable();    // コメント
+            $table->text('comments')->nullable();    // コメント
         });
     }
 
@@ -27,8 +27,10 @@ return new class extends Migration
     public function down()
     {
         Schema::table('times', function (Blueprint $table) {
-            $table->dropColumn('method');
-            $table->dropColumn('comment');
+            if (Schema::hasColumn('times', 'comments')) {
+                $table->dropColumn('comments');
+            }
+            // 他のカラムを削除するロジックがあればそれも記述します。
         });
     }
 };
