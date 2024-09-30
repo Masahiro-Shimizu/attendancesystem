@@ -77,8 +77,8 @@ https://qiita.com/yyy752/items/820260163d4883efb132
 # 一覧画面　（ホーム）
 https://github.com/user-attachments/assets/48bb9146-3d25-4712-bb71-b8dc78adfd76
 
-# 詳細画面
-https://github.com/user-attachments/assets/c189f4d5-b2c8-4005-8b42-3f259b43c3fd
+# 詳細画面(コメント機能追加)
+https://github.com/user-attachments/assets/2819a062-94bb-4ec7-a9cd-7e9d1a59fbd5
 
-# 編集画面
-https://github.com/user-attachments/assets/a291fd32-1e65-4a2c-8df1-995497928e1b
+# 編集画面(コメント機能追加)
+https://github.com/user-attachments/assets/51b08854-875a-412c-82ba-8b9290634124
