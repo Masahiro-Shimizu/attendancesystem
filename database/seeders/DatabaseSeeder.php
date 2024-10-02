@@ -12,8 +12,9 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
-        $this->call(AdminSeeder::class);
+        // ここに他のシーダーがあれば追加
+        $this->call(TestAttendanceSeeder::class); // テストデータのシーダーを実行
     }
 }

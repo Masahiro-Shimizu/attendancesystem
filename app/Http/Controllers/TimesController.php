@@ -89,11 +89,17 @@ class TimesController extends Controller
 
     public function detail($id)
     {
-        //特定の打刻データを取得
-        $time = Time::findOrFail($id);
+       // 表示する日付のデータを作成
+       $date = Carbon::now();  // 現在の日付を使う場合
 
-        //詳細ページのビューにデータを渡す
-        return view('detail',compact('time'));
+       // ログインユーザーの勤怠データを取得
+       $times = Time::where('user_id', $id)
+                ->whereYear('punchIn', $date->year)
+                ->whereMonth('punchIn', $date->month)
+                ->get();
+
+    // ビューに渡す
+    return view('times.show', compact('times', 'date'));
     }
 
     public function edit($id)

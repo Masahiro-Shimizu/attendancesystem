@@ -11,19 +11,9 @@ class Time extends Model
     protected $table = 'times';
     protected $fillable = ['user_id','punchIn','punchOut', 'comments'];
 
-    /**
-     * スコープ：指定した月の勤怠データを取得
-     */
-    public function scopeGetMonthAttendance(Builder $query, $month)
-    {
-        return $query->whereMonth('created_at', $month);
-    }
-
-    /**
-     * スコープ：指定した日の勤怠データを取得
-     */
-    public function scopeGetDayAttendance(Builder $query, $day)
-    {
-        return $query->whereDay('created_at', $day);
-    }
+    // punchIn と punchOut を自動的に Carbon インスタンスに変換
+    protected $casts = [
+        'punchIn' => 'datetime',
+        'punchOut' => 'datetime',
+    ];
 }

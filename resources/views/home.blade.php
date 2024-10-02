@@ -57,8 +57,11 @@
                             @endphp
                                 <li class="list-group-item">
                                 <strong>{{ Carbon\Carbon::parse($date)->format('Y年m月d日') }}</strong>（{{ $weekday }}）</strong> <!-- 曜日を漢字で表示 -->
+                                
                                 <p>出勤:{{ $records->first()->punchIn ?? '打刻はありません' }}</p>
                                 <p>退勤:{{ $records->sortByDesc('punchOut')->first()->punchOut ?? '打刻はありません' }}</p>
+                                
+
                                 <button class="btn btn-secondary btn-sm">
                                     <a href="{{ route('times.detail', $records->first()->id) }}" style="color:white;">詳細</a>
                                 </button>

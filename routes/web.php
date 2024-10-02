@@ -48,6 +48,9 @@ Route::middleware(['auth'])->group(function() {
     //編集画面
     Route::get('/times/edit/{id}',[App\Http\Controllers\TimesController::class, 'edit'])->name('times.edit');
     Route::put('/times/{id}',[App\Http\Controllers\TimesController::class, 'update'])->name('times.update');
+
+    //月報
+    Route::get('/monthly-report',[App\Http\Controllers\MonthlyReportController::class, 'index'])->name('monthly-report');
 });
 
 
