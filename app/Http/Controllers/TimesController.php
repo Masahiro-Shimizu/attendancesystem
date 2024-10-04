@@ -89,17 +89,14 @@ class TimesController extends Controller
 
     public function detail($id)
     {
-       // 表示する日付のデータを作成
-       $date = Carbon::now();  // 現在の日付を使う場合
+        $times = Time::find($id);
 
-       // ログインユーザーの勤怠データを取得
-       $times = Time::where('user_id', $id)
-                ->whereYear('punchIn', $date->year)
-                ->whereMonth('punchIn', $date->month)
-                ->get();
+        if (!$times) {
+            return redirect()->back()->with('error', '該当の勤怠データが見つかりません。');
+        }
 
-    // ビューに渡す
-    return view('times.show', compact('times', 'date'));
+        // ビューに勤怠データを渡す
+        return view('detail', compact('times'));
     }
 
     public function edit($id)
@@ -144,4 +141,20 @@ class TimesController extends Controller
         //更新後のリダイレクト
         return redirect()->route('times.detail', $time->id)->with('success', '打刻データが更新されました');
     }
+        
+    public function monthlyReport(Request $request)
+    {
+        // 現在の年と月を取得
+        $year = $request->input('year', Carbon::now()->year);
+        $month = $request->input('month', Carbon::now()->month);
+
+        // 該当する月のデータを取得 (ここでは例として)
+        $times = Time::whereYear('punchIn', $year)
+                    ->whereMonth('punchIn', $month)
+                    ->get();
+
+        // ビューにデータを渡す
+        return view('monthly', compact('year', 'month', 'times'));
+    }
+
 }

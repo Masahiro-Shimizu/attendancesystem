@@ -49,7 +49,7 @@
 
                          <!-- 月報へのリンク -->
                          <li class="nav-item">
-                            <a class="nav-link" href="{{ route('monthly-report', ['id' => Auth::id()]) }}">月報</a> <!-- idを渡す -->
+                            <a class="nav-link" href="{{ route('times.monthly', ['id' => Auth::id()]) }}">月報</a> <!-- idを渡す -->
                         </li>
                     @endif
                     </ul>

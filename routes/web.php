@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function() {
     Route::put('/times/{id}',[App\Http\Controllers\TimesController::class, 'update'])->name('times.update');
 
     //月報
-    Route::get('/monthly-report',[App\Http\Controllers\MonthlyReportController::class, 'index'])->name('monthly-report');
+    Route::get('/monthly_report', [App\Http\Controllers\TimesController::class, 'monthlyReport'])->name('times.monthly');
 });
 
 

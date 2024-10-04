@@ -11,12 +11,17 @@ class MonthlyReportController extends Controller
 {
     public function index(Request $request)
     {
+        // ログインしているユーザーのIDを取得
+        Auth::user()->id;
+
         // 現在の年月を取得
         $year = $request->input('year', Carbon::now()->year);
         $month = $request->input('month', Carbon::now()->month);
 
+        //$times = Time::where('user_id', $id)->get();  // 全ての勤怠データを取得
+
         // 現在ログインしているユーザーの指定された月の勤怠データを取得
-        $times = Time::where('user_id', Auth::id())
+        $times = Time::where('user_id', $userId)
                     ->whereYear('punchIn', $year)
                     ->whereMonth('punchIn', $month)
                     ->orderBy('punchIn', 'asc')
