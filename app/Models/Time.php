@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 class Time extends Model
 {
     protected $table = 'times';
-    protected $fillable = ['user_id','punchIn','punchOut', 'comments'];
+    protected $fillable = ['user_id','punchIn','punchOut', 'comments','break_time',];
 
     // punchIn と punchOut を自動的に Carbon インスタンスに変換
     protected $casts = [

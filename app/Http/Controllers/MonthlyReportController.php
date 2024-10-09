@@ -14,6 +14,9 @@ class MonthlyReportController extends Controller
         // ログインしているユーザーのIDを取得
         Auth::user()->id;
 
+        // ロケールを日本語に設定
+        Carbon::setLocale('ja');
+
         // 現在の年月を取得
         $year = $request->input('year', Carbon::now()->year);
         $month = $request->input('month', Carbon::now()->month);

@@ -37,21 +37,36 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>日付</th>
+                        <th>日付 (曜日)</th>
                         <th>出勤時間</th>
                         <th>退勤時間</th>
                         <th>合計勤務時間</th>
+                        <th>休憩時間</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($times as $time)
+                        @php
+                        // 曜日を漢字で表す配列
+                            $weekMap = ['日', '月', '火', '水', '木', '金', '土'];
+                            $weekday = $weekMap[Carbon\Carbon::parse($time->punchIn)->dayOfWeek];
+                        @endphp
                         <tr>
-                            <td>{{ $time->punchIn->format('Y-m-d') }}</td>
-                            <td>{{ $time->punchIn->format('H:i') }}</td>
+                            <td>{{ Carbon\Carbon::parse($time->punchIn)->format('Y年m月d日') }} ({{ $weekday }})</td>
+                            <td>{{ $time->punchIn ? $time->punchIn->format('H:i') : '出勤なし' }}</td>
                             <td>{{ $time->punchOut ? $time->punchOut->format('H:i') : '退勤なし' }}</td>
                             <td>
                                 @if($time->punchOut)
                                     {{ $time->punchIn->diffInHours($time->punchOut) }}時間
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <!--<td>{{ $time->break_time ? $time->break_time . '分' : '1:00' }}</td>-->
+                            <td>
+                                @if($time->punchOut)
+                                    {{-- 勤務時間から休憩時間を引く --}}
+                                    {{ $time->punchIn->diffInMinutes($time->punchOut) - ($time->break_time ? $time->break_time : 00) }}分
                                 @else
                                     -
                                 @endif
