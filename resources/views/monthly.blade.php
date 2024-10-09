@@ -65,8 +65,9 @@
                             <!--<td>{{ $time->break_time ? $time->break_time . '分' : '1:00' }}</td>-->
                             <td>
                                 @if($time->punchOut)
-                                    {{-- 勤務時間から休憩時間を引く --}}
-                                    {{ $time->punchIn->diffInMinutes($time->punchOut) - ($time->break_time ? $time->break_time : 00) }}分
+                                    
+                                    {{-- 休憩時間を分で表示 --}}
+                                    {{ $time->break_time ? $time->break_time . '分' : '休憩なし' }}
                                 @else
                                     -
                                 @endif

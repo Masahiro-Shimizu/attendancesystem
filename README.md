@@ -84,4 +84,5 @@ https://github.com/user-attachments/assets/2819a062-94bb-4ec7-a9cd-7e9d1a59fbd5
 https://github.com/user-attachments/assets/51b08854-875a-412c-82ba-8b9290634124
 
 ## 月報画面
-https://github.com/user-attachments/assets/f8955a90-99d1-424d-b718-2c286c46d997
+https://github.com/user-attachments/assets/d17d4f94-3894-45f9-a8ee-83d991232bd3
+→休憩時間の表示を自動にしたい、元々の設定として1時間は取得しているのを前提として作成した方が良いか？
