@@ -90,13 +90,13 @@ class TimesController extends Controller
     // 休憩開始
     public function breakStart()
     {
-        $time = Time::where('user_id', Auth::id())
+        $times = Time::where('user_id', Auth::id())
             ->whereNull('punchOut') // 退勤していない
             ->first();
 
-        if ($time) {
+        if ($times) {
             // 休憩開始時間を一時的に保存
-            $time->update(['break_start' => Carbon::now()]);
+            $times->update(['break_start' => Carbon::now()]);
             return response()->json(['message' => '休憩を開始しました']);
         }
 
@@ -106,22 +106,22 @@ class TimesController extends Controller
     // 休憩終了
     public function breakEnd()
     {
-        $time = Time::where('user_id', Auth::id())
+        $times = Time::where('user_id', Auth::id())
             ->whereNull('punchOut') // 退勤していない
             ->first();
 
-        if ($time) {
+        if ($times) {
             // 休憩終了時刻
             $breakEnd = Carbon::now();
 
             // 休憩開始時刻と終了時刻の差を計算
-            $breakDuration = $time->break_start->diffInMinutes($breakEnd);
+            $breakDuration = $times->break_start->diffInMinutes($breakEnd);
 
             // 既存の休憩時間に追加する
-            $updatedBreakTime = $time->break_time + $breakDuration;
+            $updatedBreakTime = $times->break_time + $breakDuration;
 
             // 休憩時間を保存し、開始時間はリセット
-            $time->update([
+            $times->update([
                 'break_time' => $updatedBreakTime,
                 'break_start' => null // 休憩開始時刻をリセット
             ]);
