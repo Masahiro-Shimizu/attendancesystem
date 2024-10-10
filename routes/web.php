@@ -38,10 +38,12 @@ Route::middleware(['auth'])->group(function() {
     //出勤と退勤のPOSTリクエストのみ
     //Route::get('/punch-in', [App\Http\Controllers\TimesController::class, 'punchIn'])->name('punch-in');
     Route::post('/punch-in', [App\Http\Controllers\TimesController::class, 'punchIn'])->name('punch-in');
+    Route::post('/break-start', [TimesController::class, 'breakStart'])->name('break-start');
+    Route::post('/break-end', [TimesController::class, 'breakEnd'])->name('break-end');
     //Route::get('/punch-out', [App\Http\Controllers\TimesController::class, 'punchOut'])->name('punch-out');
     Route::post('/punch-out', [App\Http\Controllers\TimesController::class, 'punchOut'])->name('punch-out');
     Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
-
+   
     //詳細画面
     Route::get('/times/{id}',[App\Http\Controllers\TimesController::class, 'detail'])->name('times.detail');
     

@@ -32,6 +32,16 @@
                                     <button type="submit" class="btn btn-success">退勤</button>
                                 </form>
                             </li>
+                            <li>
+                                <form id="breakstart-form" method="POST" action="{{ route('break-start') }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-info">休憩開始</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form id="breakend-form" method="POST" action="{{ route('break-end') }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-info">休憩終了</button>
                         </ul>
                     </div>
                 </div>
@@ -125,6 +135,42 @@
             });
         });
 
+        $(document).ready(function() {
+    // CSRFトークン設定
+    $.ajaxSetup({
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+    });
+
+    // 休憩開始
+    $('#breakstart-form').on('submit', function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: '{{ route("break-start") }}',
+            method: 'POST',
+            success: function(response) {
+                alert(response.message);
+            },
+            error: function(xhr) {
+                alert('休憩開始に失敗しました。');
+            }
+        });
+    });
+
+    // 休憩終了
+    $('#breakend-form').on('submit', function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: '{{ route("break-end") }}',
+            method: 'POST',
+            success: function(response) {
+                alert(response.message);
+            },
+            error: function(xhr) {
+                alert('休憩終了に失敗しました。');
+            }
+        });
+    });
+});
         $('#punchout-form').on('submit', function(event) {
             event.preventDefault();
             $.ajax({

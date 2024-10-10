@@ -87,6 +87,51 @@ class TimesController extends Controller
         return response()->json(['message' => '退勤処理に失敗しました'], 400);
     }
 
+    // 休憩開始
+    public function breakStart()
+    {
+        $time = Time::where('user_id', Auth::id())
+            ->whereNull('punchOut') // 退勤していない
+            ->first();
+
+        if ($time) {
+            // 休憩開始時間を一時的に保存
+            $time->update(['break_start' => Carbon::now()]);
+            return response()->json(['message' => '休憩を開始しました']);
+        }
+
+        return response()->json(['message' => '休憩開始処理に失敗しました'], 400);
+    }
+
+    // 休憩終了
+    public function breakEnd()
+    {
+        $time = Time::where('user_id', Auth::id())
+            ->whereNull('punchOut') // 退勤していない
+            ->first();
+
+        if ($time) {
+            // 休憩終了時刻
+            $breakEnd = Carbon::now();
+
+            // 休憩開始時刻と終了時刻の差を計算
+            $breakDuration = $time->break_start->diffInMinutes($breakEnd);
+
+            // 既存の休憩時間に追加する
+            $updatedBreakTime = $time->break_time + $breakDuration;
+
+            // 休憩時間を保存し、開始時間はリセット
+            $time->update([
+                'break_time' => $updatedBreakTime,
+                'break_start' => null // 休憩開始時刻をリセット
+            ]);
+
+            return response()->json(['message' => '休憩を終了しました']);
+        }
+
+        return response()->json(['message' => '休憩終了処理に失敗しました'], 400);
+    }
+    
     public function detail($id)
     {
         $times = Time::find($id);
