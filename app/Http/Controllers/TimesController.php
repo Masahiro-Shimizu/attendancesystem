@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Time;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class TimesController extends Controller
 {
@@ -90,16 +91,34 @@ class TimesController extends Controller
     // 休憩開始
     public function breakStart()
     {
+        // ログ: メソッドが呼ばれた時点
+        Log::info('休憩開始: User ID: ', ['user_id' => Auth::id()]);
+
         $times = Time::where('user_id', Auth::id())
             ->whereNull('punchOut') // 退勤していない
             ->first();
 
         if ($times) {
+            // 現在時刻をログに出力
+            Log::info('現在時刻（休憩開始前）: ', ['now' => Carbon::now()]);
             // 休憩開始時間を一時的に保存
-            $times->update(['break_start' => Carbon::now()]);
+            //$times->update(['break_start' => Carbon::now()]);
+            //$times->save();
+            // 休憩開始時間を一時的に保存
+            $times->break_start = Carbon::now();
+
+            // 保存前のデータをログに出力
+            Log::info('保存前の勤怠データ: ', ['times' => $times]);
+
+            $times->save();
+
+            //Log::info('休憩開始時刻を記録: ', ['break_start' => $times->break_start]);
+            // 保存後のデータをログに出力
+            Log::info('保存後の勤怠データ: ', ['times' => $times]);
             return response()->json(['message' => '休憩を開始しました']);
         }
 
+        Log::error('休憩開始処理に失敗しました: User ID', ['user_id' => Auth::id()]);
         return response()->json(['message' => '休憩開始処理に失敗しました'], 400);
     }
 
@@ -107,27 +126,38 @@ class TimesController extends Controller
     public function breakEnd()
     {
         $times = Time::where('user_id', Auth::id())
-            ->whereNull('punchOut') // 退勤していない
-            ->first();
+        ->whereNull('punchOut') // 退勤していない
+        ->first();
 
-        if ($times) {
-            // 休憩終了時刻
-            $breakEnd = Carbon::now();
+    if ($times && $times->break_start) {
+        // 現在時刻（休憩終了時刻）をログに出力
+        $breakEndTime = Carbon::now();
+        Log::info('現在時刻（休憩終了）: ', ['break_end' => $breakEndTime]);
 
-            // 休憩開始時刻と終了時刻の差を計算
-            $breakDuration = $times->break_start->diffInMinutes($breakEnd);
+        // break_start を Carbon インスタンスに変換してログに出力
+        $breakStartTime = Carbon::parse($times->break_start);
+        Log::info('休憩開始時刻: ', ['break_start' => $breakStartTime]);
 
-            // 既存の休憩時間に追加する
-            $updatedBreakTime = $times->break_time + $breakDuration;
+        // 休憩開始時刻と終了時刻の差を計算してログに出力
+        $breakDuration = $breakStartTime->diffInMinutes($breakEndTime);
+        Log::info('休憩時間（分）: ', ['break_duration' => $breakDuration]);
 
-            // 休憩時間を保存し、開始時間はリセット
-            $times->update([
-                'break_time' => $updatedBreakTime,
-                'break_start' => null // 休憩開始時刻をリセット
-            ]);
+        // 既存の休憩時間に追加
+        $updatedBreakTime = $times->break_time + $breakDuration;
 
-            return response()->json(['message' => '休憩を終了しました']);
-        }
+        // 新しい休憩時間をログに出力
+        Log::info('更新された休憩時間: ', ['updated_break_time' => $updatedBreakTime]);
+
+        // 休憩時間を加算
+        $times->break_time = $updatedBreakTime;
+        $times->break_start = null;
+        $times->save();
+
+        // 保存後のデータをログに出力
+        Log::info('休憩終了後の勤怠データ: ', ['times' => $times]);
+
+        return response()->json(['message' => '休憩を終了しました']);
+    }
 
         return response()->json(['message' => '休憩終了処理に失敗しました'], 400);
     }

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('times', function (Blueprint $table) {
-            $table->timestamp('break_start')->nullable(); // 一時的な休憩開始時刻
+            $table->dateTime('break_start')->nullable(); // 休憩開始時刻
         });
     }
 
