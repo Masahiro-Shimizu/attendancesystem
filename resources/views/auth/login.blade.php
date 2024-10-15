@@ -64,6 +64,11 @@
                                 @endif
                             </div>
                         </div>
+
+                        <!-- 管理者専用のリンク -->
+                        <div class="text-center mt-4">
+                            <a href="{{ route('admin.login') }}" class="btn btn-link">管理者専用ページ</a>
+                        </div>
                     </form>
                 </div>
             </div>

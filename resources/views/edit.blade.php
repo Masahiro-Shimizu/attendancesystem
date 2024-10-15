@@ -42,6 +42,11 @@
                             <input type="datetime-local" name="punchOut" class="form-control" value="{{ $time->punchOut ? $time->punchOut->format('Y-m-d\TH:i') : '' }}">
                     </div>
 
+                    <div class="form-group">
+                            <label for="breakTime">休憩時間 (分)</label>
+                            <input type="number" class="form-control" id="breakTime" name="break_time" value="{{ $time->break_time ? \Carbon\Carbon::parse($time->break_time)->format('H:i') : '' }}">
+                    </div>
+
                     <!-- コメント -->
                     <div class="form-group">
                             <label for="comments">コメント</label>

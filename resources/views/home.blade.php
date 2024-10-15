@@ -18,32 +18,25 @@
                     <p id="current-date"></p>
                     <p id="current-time"></p>
 
-                    <div class="button-form">
-                        <ul>
-                            <li>
-                                <form id="punchin-form" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-primary">出勤</button>
-                                </form>
-                            </li>
-                            <li>
-                                <form id="punchout-form" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success">退勤</button>
-                                </form>
-                            </li>
-                            <li>
-                                <form id="breakstart-form" method="POST" action="{{ route('break-start') }}">
-                                    @csrf
-                                    <button type="submit" class="btn btn-info">休憩開始</button>
-                                </form>
-                            </li>
-                            <li>
-                                <form id="breakend-form" method="POST" action="{{ route('break-end') }}">
-                                    @csrf
-                                    <button type="submit" class="btn btn-info">休憩終了</button>
-                        </ul>
+                    <div class="button-group">
+                        <form id="punchin-form" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-primary">出勤</button>
+                        </form>
+                        <form id="punchout-form" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-success">退勤</button>
+                        </form>
+                        <form id="breakstart-form" method="POST" action="{{ route('break-start') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-info">休憩開始</button>
+                        </form>
+                        <form id="breakend-form" method="POST" action="{{ route('break-end') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-secondary">休憩終了</button>
+                        </form>
                     </div>
+
                 </div>
 
                 <div class="card body">

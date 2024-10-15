@@ -1,0 +1,20 @@
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* ボタンの間隔を指定 */
+}
+
+.button-group button {
+    padding: 10px 20px; /* ボタンの余白を調整 */
+    border-radius: 8px; /* ボタンの角を丸くする */
+}
+
+.btn-info {
+    background-color: #87CEFA; /* 休憩開始のボタンを明るめの水色に変更 */
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #20B2AA; /* 休憩終了のボタンを少し淡い青緑に変更 */
+    color: white;
+}

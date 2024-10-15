@@ -197,10 +197,22 @@ class TimesController extends Controller
             'punchOut' => 'nullable|date',
             'comments' => 'nullable|string|max:255',
             'method' => 'required|string',
+            'break_time' => 'nullable|integer|min:0',
         ]);
 
         //更新する打刻データを取得
         $time = Time::findOrFail($id);
+
+        // 休憩時間が指定されている場合、更新（分単位で処理）
+        if ($request->filled('break_time')) {
+        // `break_time` が数値（分）で送信されてきた場合
+        $breakMinutes = $request->input('break_time');
+        // 休憩時間を分単位で保存する (例: 60分なら "01:00:00" として保存)
+        $time->break_time = Carbon::createFromTime(0, $breakMinutes)->format('H:i:s');
+            } else {
+            // 休憩時間が入力されていない場合は null として保存
+            $time->break_time = null;
+        }
 
         //データを更新
         $time->update([

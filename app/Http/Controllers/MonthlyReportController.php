@@ -9,33 +9,30 @@ use Illuminate\Support\Facades\Auth;
 
 class MonthlyReportController extends Controller
 {
-    public function index(Request $request)
+    // 承認待ちの月報を表示するページ
+    public function index()
     {
-        // ログインしているユーザーのIDを取得
-        Auth::user()->id;
+        $reports = MonthlyReport::where('status', 'pending')->get();
+        return view('admin.monthly_reports.index', compact('reports'));
+    }
 
-        // ロケールを日本語に設定
-        Carbon::setLocale('ja');
+    // 月報を承認する処理
+    public function approve($id)
+    {
+        $report = MonthlyReport::findOrFail($id);
+        $report->status = 'approved';
+        $report->save();
 
-        // 現在の年月を取得
-        $year = $request->input('year', Carbon::now()->year);
-        $month = $request->input('month', Carbon::now()->month);
+        return redirect()->route('monthly_report.approval')->with('success', '月報を承認しました。');
+    }
 
-        //$times = Time::where('user_id', $id)->get();  // 全ての勤怠データを取得
+    // 月報を却下する処理
+    public function reject($id)
+    {
+        $report = MonthlyReport::findOrFail($id);
+        $report->status = 'rejected';
+        $report->save();
 
-        // 現在ログインしているユーザーの指定された月の勤怠データを取得
-        $times = Time::where('user_id', $userId)
-                    ->whereYear('punchIn', $year)
-                    ->whereMonth('punchIn', $month)
-                    ->orderBy('punchIn', 'asc')
-                    ->get();
-
-        // もしデータが取得できなかった場合は空のコレクションを返す
-        $times = $times ?? collect(); 
-        // 月の日数を取得
-        $daysInMonth = Carbon::createFromDate($year, $month, 1)->daysInMonth;
-
-        // データをビューに渡す
-        return view('reports.monthly', compact('times', 'year', 'month', 'daysInMonth'));
+        return redirect()->route('monthly_report.approval')->with('success', '月報を却下しました。');
     }
 }

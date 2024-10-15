@@ -21,9 +21,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['admin'])->group(function () {
-    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [RegisterController::class, 'register']);
+// ログイン前にアクセスできるルート
+Route::get('/admin/login', [App\Http\Controllers\AdminController::class, 'showAdminLoginForm'])->name('admin.login');
+Route::post('/admin/login', [App\Http\Controllers\AdminController::class, 'adminLogin']);
+
+
+Route::middleware(['auth:admin', 'admin'])->group(function() {
+    Route::get('/monthly_report/approval', [App\Http\Controllers\MonthlyReportController::class, 'index'])->name('monthly_report.approval');
+    Route::post('/monthly_report/approve/{id}', [App\Http\Controllers\MonthlyReportController::class, 'approve'])->name('monthly_report.approve');
+    Route::post('/monthly_report/reject/{id}', [App\Http\Controllers\MonthlyReportController::class, 'reject'])->name('monthly_report.reject');
 });
 
 Auth::routes();
