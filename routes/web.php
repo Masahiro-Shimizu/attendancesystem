@@ -27,6 +27,8 @@ Route::post('/admin/login', [App\Http\Controllers\AdminController::class, 'admin
 
 
 Route::middleware(['auth:admin', 'admin'])->group(function() {
+    Route::get('/admin/home', [App\Http\Controllers\AdminController::class, 'home'])->name('admin.home');
+
     Route::get('/monthly_report/approval', [App\Http\Controllers\MonthlyReportController::class, 'index'])->name('monthly_report.approval');
     Route::post('/monthly_report/approve/{id}', [App\Http\Controllers\MonthlyReportController::class, 'approve'])->name('monthly_report.approve');
     Route::post('/monthly_report/reject/{id}', [App\Http\Controllers\MonthlyReportController::class, 'reject'])->name('monthly_report.reject');
@@ -59,6 +61,8 @@ Route::middleware(['auth'])->group(function() {
 
     //月報
     Route::get('/monthly_report', [App\Http\Controllers\TimesController::class, 'monthlyReport'])->name('times.monthly');
+    Route::get('/monthly_report/create', [App\Http\Controllers\MonthlyReportController::class, 'create'])->name('monthly_report.create');
+    Route::post('/monthly_report/store', [App\Http\Controllers\MonthlyReportController::class, 'store'])->name('monthly_report.store');
 });
 
 

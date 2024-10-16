@@ -48,9 +48,14 @@
                             <a class="nav-link" href="{{ route('times.edit', ['id' => Auth::id()]) }}">勤怠編集</a> <!-- idを渡す -->
                         </li>
 
-                         <!-- 月報へのリンク -->
-                         <li class="nav-item">
+                        <!-- 月報へのリンク -->
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('times.monthly', ['id' => Auth::id()]) }}">月報</a> <!-- idを渡す -->
+                        </li>
+
+                        <!-- 月報申請へのリンクを追加 -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('monthly_report.create') }}">月報申請</a>
                         </li>
                     @endif
                     </ul>
