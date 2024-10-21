@@ -57,6 +57,16 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('monthly_report.create') }}">月報申請</a>
                         </li>
+
+                         <!-- 申請一覧へのリンク -->
+                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('leave_requests.index') }}">申請一覧</a>
+                        </li>
+
+                        <!-- 休暇・有給・欠勤申請へのリンク -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('leave_requests.create') }}">申請作成</a>
+                        </li>
                     @endif
                     </ul>
 
