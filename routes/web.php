@@ -27,19 +27,18 @@ Route::post('/admin/login', [App\Http\Controllers\AdminController::class, 'admin
 
 
 Route::middleware(['auth:admin', 'admin'])->group(function() {
-    Route::get('/admin/home', [App\Http\Controllers\AdminController::class, 'home'])->name('admin.home');
-
+    Route::get('/admin/home', [App\Http\Controllers\AdminHomeController::class, 'index'])->name('admin.home');
     Route::get('/monthly_report/approval', [App\Http\Controllers\MonthlyReportController::class, 'index'])->name('monthly_report.approval');
     Route::post('/monthly_report/approve/{id}', [App\Http\Controllers\MonthlyReportController::class, 'approve'])->name('monthly_report.approve');
     Route::post('/monthly_report/reject/{id}', [App\Http\Controllers\MonthlyReportController::class, 'reject'])->name('monthly_report.reject');
     // 申請一覧表示
-    Route::get('/admin/leave_requests', [LeaveRequestController::class, 'adminIndex'])->name('admin.leave_requests.index');
+    Route::get('/admin/leave_requests', [App\Http\Controllers\LeaveRequestController::class, 'adminIndex'])->name('admin.leave_requests.index');
     
     // 申請承認
-    Route::post('/admin/leave_requests/approve/{id}', [LeaveRequestController::class, 'approve'])->name('admin.leave_requests.approve');
+    Route::post('/admin/leave_requests/approve/{id}', [App\Http\Controllers\LeaveRequestController::class, 'approve'])->name('admin.leave_requests.approve');
     
     // 申請差し戻し
-    Route::post('/admin/leave_requests/reject/{id}', [LeaveRequestController::class, 'reject'])->name('admin.leave_requests.reject');
+    Route::post('/admin/leave_requests/reject/{id}', [App\Http\Controllers\LeaveRequestController::class, 'reject'])->name('admin.leave_requests.reject');
 });
 
 Auth::routes();

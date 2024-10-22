@@ -46,7 +46,7 @@ class LeaveRequestController extends Controller
         $leaveRequest = LeaveRequest::findOrFail($id);
         $leaveRequest->update(['status' => 'approved']);
 
-        return redirect()->route('leave_requests.index')->with('success', '申請が承認されました。');
+        return redirect()->route('admin.home')->with('success', '申請が承認されました。');
     }
 
     public function reject($id)
