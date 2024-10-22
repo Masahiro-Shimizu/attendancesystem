@@ -85,4 +85,7 @@ https://github.com/user-attachments/assets/51b08854-875a-412c-82ba-8b9290634124
 
 ## 月報画面
 https://github.com/user-attachments/assets/d17d4f94-3894-45f9-a8ee-83d991232bd3
-→休憩時間の表示を自動にしたい、元々の設定として1時間は取得しているのを前提として作成した方が良いか？
+
+## 管理者画面
+https://github.com/user-attachments/assets/a7ffb399-4d50-429e-911b-fdcbcc298375
+ヘッダーの部分が要らない or 変更する

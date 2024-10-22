@@ -40,17 +40,17 @@
                     @if (Auth::check()) <!-- ログインしているか確認 -->    
                         <!-- 勤怠詳細へのリンク -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('', ['id' => Auth::id()]) }}">勤怠詳細</a> <!-- idを渡す -->
+                            <a class="nav-link" href="{{ route('home', ['id' => Auth::id()]) }}">勤怠詳細</a> <!-- idを渡す -->
                         </li>
 
                         <!-- 勤怠編集へのリンク -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('', ['id' => Auth::id()]) }}">勤怠編集</a> <!-- idを渡す -->
+                            <a class="nav-link" href="{{ route('home', ['id' => Auth::id()]) }}">勤怠編集</a> <!-- idを渡す -->
                         </li>
 
                          <!-- 月報へのリンク -->
                          <li class="nav-item">
-                            <a class="nav-link" href="{{ route('', ['id' => Auth::id()]) }}">月報</a> <!-- idを渡す -->
+                            <a class="nav-link" href="{{ route('home', ['id' => Auth::id()]) }}">月報</a> <!-- idを渡す -->
                         </li>
                     @endif
                     </ul>
