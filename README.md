@@ -87,5 +87,4 @@ https://github.com/user-attachments/assets/51b08854-875a-412c-82ba-8b9290634124
 https://github.com/user-attachments/assets/d17d4f94-3894-45f9-a8ee-83d991232bd3
 
 ## 管理者画面
-https://github.com/user-attachments/assets/a7ffb399-4d50-429e-911b-fdcbcc298375
-ヘッダーの部分が要らない or 変更する
+https://github.com/user-attachments/assets/2a10686a-649f-4dd9-beb9-9834887d5db7
