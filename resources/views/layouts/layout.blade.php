@@ -9,9 +9,13 @@
 
     <title>{{ config('app.name','勤怠管理システム') }}</title>
 
+    <!-- jQueryの読み込み -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     @vite(['resources/js/app.js', 'resources/sass/app.scss'])
+
     <!--<link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">-->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 

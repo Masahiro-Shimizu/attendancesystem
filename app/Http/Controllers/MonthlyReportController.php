@@ -32,11 +32,12 @@ class MonthlyReportController extends Controller
         // 月報データを保存する処理
         MonthlyReport::create([
             'user_id' => auth()->id(),
-            'month' => $month, // フル日付として保存
+            'month' => $month,  // 修正後の月
             'status' => 'pending',  // 申請時は保留状態
         ]);
 
-        return redirect()->route('monthly_report.create')->with('success', '月報を申請しました');
+        return response()->json(['message' => '月報を申請しました。']);
+        //redirect()->route('monthly_report.create')->with('success', '月報を申請しました');
     }
 
     // 月報一覧（承認・却下用）

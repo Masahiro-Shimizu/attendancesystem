@@ -16,8 +16,8 @@ class TestAttendanceSeeder extends Seeder
     {
         // 2024年の祝日（例として一部を設定）
         return [
-            '2024-09-16', // 敬老の日
-            '2024-09-23', // 秋分の日
+            '2024-08-12', // 振替休日
+            //'2024-09-23', // 秋分の日
         ];
     }
 
@@ -26,8 +26,8 @@ class TestAttendanceSeeder extends Seeder
      */
     public function run()
     {
-        $startDate = Carbon::create(2024, 9, 1);
-        $endDate = Carbon::create(2024, 9, 30);
+        $startDate = Carbon::create(2024, 8, 1);
+        $endDate = Carbon::create(2024, 8, 31);
 
         $holidays = $this->getHolidays();
 

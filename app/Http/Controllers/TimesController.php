@@ -241,7 +241,7 @@ class TimesController extends Controller
                     ->get();
 
         // ビューにデータを渡す
-        return view('monthly', compact('year', 'month', 'times'));
+        return view('monthly_report.monthly', compact('year', 'month', 'times'));
     }
 
 }
