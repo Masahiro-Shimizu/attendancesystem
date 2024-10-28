@@ -13,11 +13,14 @@ class AdminHomeController extends Controller
     {
         // 月報データを取得
         $monthlyReports = MonthlyReport::where('status', 'pending')->get();
+        $leaveRequests = LeaveRequest::with('user')->where('status', 'pending')->get();
 
         // 休暇・有給・欠勤申請データを取得
         $leaveRequests = LeaveRequest::where('status', 'pending')->get();
 
+        $applications = $monthlyReports->merge($leaveRequests)->sortByDesc('created_at');
+
         // ビューにデータを渡す
-        return view('admin.home', compact('monthlyReports', 'leaveRequests'));
+        return view('admin.home', compact('applications'));
     }
 }

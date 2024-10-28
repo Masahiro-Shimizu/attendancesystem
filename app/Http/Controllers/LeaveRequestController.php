@@ -46,7 +46,10 @@ class LeaveRequestController extends Controller
         $leaveRequest = LeaveRequest::findOrFail($id);
         $leaveRequest->update(['status' => 'approved']);
 
-        return redirect()->route('admin.home')->with('success', '申請が承認されました。');
+        return response()->json([
+            'message' => '申請を承認しました。',
+            'status' => '承認済み'
+        ]);
     }
 
     public function reject($id)
@@ -54,7 +57,10 @@ class LeaveRequestController extends Controller
         $leaveRequest = LeaveRequest::findOrFail($id);
         $leaveRequest->update(['status' => 'rejected']);
 
-        return redirect()->route('leave_requests.index')->with('success', '申請が却下されました。');
+        return response()->json([
+            'message' => '申請を却下しました。',
+            'status' => '却下'
+        ]);
     }
 }
 
