@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('admins')) {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();  // 管理者のID（自動インクリメント）
             $table->string('name');  // 管理者の名前
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->rememberToken();  // Remember me トークン
             $table->timestamps();  // 作成・更新日時
         });
+        }
     }
 
     /**
