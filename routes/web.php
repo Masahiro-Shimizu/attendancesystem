@@ -47,15 +47,13 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 // 認証が必要なルートをグループ化
 Route::middleware(['auth'])->group(function() {
-    //勤怠管理関連のルート
+    //ホームのルート
     Route::get('/times', [App\Http\Controllers\TimesController::class, 'index'])->name('times.index');
     
     //出勤と退勤のPOSTリクエストのみ
-    //Route::get('/punch-in', [App\Http\Controllers\TimesController::class, 'punchIn'])->name('punch-in');
     Route::post('/punch-in', [App\Http\Controllers\TimesController::class, 'punchIn'])->name('punch-in');
     Route::post('/break-start', [App\Http\Controllers\TimesController::class, 'breakStart'])->name('break-start');
     Route::post('/break-end', [App\Http\Controllers\TimesController::class, 'breakEnd'])->name('break-end');
-    //Route::get('/punch-out', [App\Http\Controllers\TimesController::class, 'punchOut'])->name('punch-out');
     Route::post('/punch-out', [App\Http\Controllers\TimesController::class, 'punchOut'])->name('punch-out');
     Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
    
@@ -78,23 +76,4 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/leave_requests/approve/{id}', [App\Http\Controllers\LeaveRequestController::class, 'approve'])->name('leave_requests.approve');
     Route::post('/leave_requests/reject/{id}', [App\Http\Controllers\LeaveRequestController::class, 'reject'])->name('leave_requests.reject');
 });
-
-
-//まずは一通り形にしてみる
-//新規ユーザー登録は管理者権限で実行出来るようにする
-//マルチログインの実装
-//一覧画面で打刻し、また一覧画面に戻ってくる
-//日次勤怠を一覧化
-//給与関係まではやらない
-//画面は一覧画面、日次勤怠、月報、その他は後で考える
-//6/8ミドルウェアについて理解が足りていない
-
-//6/15
-//ポップアップ表示のやり方　←ポップアップは非同期に合わないのではないか？という問題があるため、行わない
-
-//7/25
-//ポップアップ表示ではなく、枠の中に文言で表示にする
-
-
-
 
