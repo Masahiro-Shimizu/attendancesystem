@@ -76,13 +76,8 @@ class TimesController extends Controller
                                 } catch (\Exception $e) {
                                     \Log::error('Failed to update PunchOut:', ['error' => $e->getMessage()]);
                                 }
-        //if ($attendance) {
-        //    \Log::info('Updating PunchOut time for user:', ['user_id' => Auth::id(), 'time' => Carbon::now('Asia/Tokyo')]);
-
-        //    $attendance->update([
-        //        'punchOut' => Carbon::now('Asia/Tokyo'),
-        //   ]);
-            return response()->json(['message' => '退勤しました']);
+        
+                            return response()->json(['message' => '退勤しました']);
         }
 
         return response()->json(['message' => '退勤処理に失敗しました'], 400);
