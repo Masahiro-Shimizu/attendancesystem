@@ -4,18 +4,59 @@
 <div class="container">
     <h2>月報の申請</h2>
     <div id="popup-message" style="display: none;" class="alert"></div>
-    
+
     <form id="monthly-report-form" method="POST" action="{{ route('monthly_report.store') }}">
         @csrf
-        
+
         <div class="form-group">
             <label for="month">申請する月</label>
             <input type="month" id="month" name="month" class="form-control" required>
         </div>
-        
+
         <button type="submit" class="btn btn-primary">申請</button>
     </form>
+
+    <!-- 差し戻し理由の表示 -->
+    @if ($latestApplication && $latestApplication->status == 'rejected')
+    <div class="mt-3 alert alert-warning">
+        <strong>申請が却下されました</strong><br>
+        <strong>却下日時:</strong> {{ $latestApplication->updated_at->format('Y年m月d日 H:i') }}<br>
+        <strong>管理者:</strong> {{ $latestApplication->rejected_by ?? '不明' }}<br>
+        <strong>理由:</strong> {{ $latestApplication->reject_comment }}
+    </div>
+    @endif
+
 </div>
+@endsection
+
+@section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // CSRFトークンの設定
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // フォーム送信処理
+        $('#monthly-report-form').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '{{ route("monthly_report.store") }}',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    $('#popup-message').text(response.message).addClass('alert-success').show();
+                },
+                error: function(xhr) {
+                    $('#popup-message').text('申請に失敗しました。').addClass('alert-danger').show();
+                }
+            });
+        });
+    });
+</script>
 @endsection
 
 @section('scripts')

@@ -32,7 +32,18 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Login') }}
                                 </button>
+
+                                @if (Route::has('password.request'))
+                                    <a class="btn btn-link" href="{{ route('password.request') }}">
+                                        {{ __('Forgot Your Password?') }}
+                                    </a>
+                                @endif
                             </div>
+                        </div>
+
+                        <!-- ユーザーログインページへのリンク -->
+                        <div class="text-center mt-4">
+                            <a href="{{ route('login') }}" class="btn btn-link">ユーザーログインページへ</a>
                         </div>
                     </form>
                 </div>

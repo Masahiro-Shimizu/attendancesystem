@@ -75,5 +75,10 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/leave_requests', [App\Http\Controllers\LeaveRequestController::class, 'store'])->name('leave_requests.store');
     Route::post('/leave_requests/approve/{id}', [App\Http\Controllers\LeaveRequestController::class, 'approve'])->name('leave_requests.approve');
     Route::post('/leave_requests/reject/{id}', [App\Http\Controllers\LeaveRequestController::class, 'reject'])->name('leave_requests.reject');
+
+    //お知らせ確認
+    Route::post('/notifications/check/{id}', [App\Http\Controllers\NotificationController::class, 'markAsChecked'])->name('notifications.check');
+    Route::patch('/notifications/check/{id}', [NotificationController::class, 'check'])->name('notifications.check');
+
 });
 

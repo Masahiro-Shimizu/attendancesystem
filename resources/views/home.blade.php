@@ -39,48 +39,65 @@
 
                 </div>
 
-                <div class="card body">
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <h4>打刻履歴(3日分)</h4>
-                            <ul class="list-group">
-                                @foreach($items as $date => $records)
-                                @php
-                                // $recordsを配列として扱う
-                                $recordsArray = $records->toArray();
-                                usort($recordsArray, function ($a, $b) {
-                                return strtotime($b['punchOut']) <=> strtotime($a['punchOut']);
-                                    });
-                                    $sortedRecords = collect($recordsArray);
+                <div class="row">
+                <!-- 打刻履歴（左側） -->
+                    <div class="col-md-6">
+                    <h4>打刻履歴(3日分)</h4>
+                    <ul class="list-group">
+                    @foreach($items as $date => $records)
+                        @php
+                            // $recordsを配列として扱う
+                            $recordsArray = $records->toArray();
+                            usort($recordsArray, function ($a, $b) {
+                            return strtotime($b['punchOut']) <=> strtotime($a['punchOut']);
+                            });
+                            $sortedRecords = collect($recordsArray);
 
-                                    // 曜日を漢字で表す配列
-                                    $weekMap = ['日', '月', '火', '水', '木', '金', '土'];
-                                    $weekday = $weekMap[Carbon\Carbon::parse($date)->dayOfWeek]; // 日付の曜日取得
-
-                                    @endphp
-                                    <li class="list-group-item">
-                                        <strong>{{ Carbon\Carbon::parse($date)->format('Y年m月d日') }}</strong>（{{ $weekday }}）</strong> <!-- 曜日を漢字で表示 -->
-
-                                        <p>出勤:{{ $records->first()->punchIn ?? '打刻はありません' }}</p>
-                                        <p>退勤:{{ $records->sortByDesc('punchOut')->first()->punchOut ?? '打刻はありません' }}</p>
-
-
-                                        <button class="btn btn-secondary btn-sm">
-                                            <a href="{{ route('times.detail', $records->first()->id) }}" style="color:white;">詳細</a>
-                                        </button>
-                                        <button class="btn btn-secondary btn-sm">
-                                            <a href="{{ route('times.edit', $records->first()->id) }}" style="color:white;">編集</a>
-                                        </button>
-                                    </li>
-                                    @endforeach
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                            // 曜日を漢字で表す配列
+                            $weekMap = ['日', '月', '火', '水', '木', '金', '土'];
+                            $weekday = $weekMap[Carbon\Carbon::parse($date)->dayOfWeek]; // 日付の曜日取得
+                        @endphp
+                        <li class="list-group-item">
+                            <strong>{{ Carbon\Carbon::parse($date)->format('Y年m月d日') }}（{{ $weekday }}）</strong>
+                            <p>出勤: {{ $records->first()->punchIn ?? '打刻はありません' }}</p>
+                            <p>退勤: {{ $records->sortByDesc('punchOut')->first()->punchOut ?? '打刻はありません' }}</p>
+                            <button class="btn btn-secondary btn-sm">
+                                <a href="{{ route('times.detail', $records->first()->id) }}" style="color:white;">詳細</a>
+                            </button>
+                            <button class="btn btn-secondary btn-sm">
+                                <a href="{{ route('times.edit', $records->first()->id) }}" style="color:white;">編集</a>
+                            </button>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
-        </div>
+
+            <div class="col-md-4">
+            <h2>通知</h2>
+            <ul class="list-group">
+                @if($notifications->isEmpty())
+                    <p>新しい通知はありません。</p>
+                @else
+                    <ul class="list-group">
+                @foreach($notifications as $notification)
+                    <li class="list-group-item {{ $notification->is_checked ? 'bg-light' : '' }}">
+                    <div>                   
+                        {{ $notification->message }}
+                        @if(!$notification->is_checked)
+                                <form method="POST" action="{{ route('notifications.check', $notification->id) }}" style="display: inline;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link btn-sm">確認</button>
+                                </form>
+                            @else
+                                <span class="text-muted">確認済み</span>
+                            @endif
+                        <small class="text-muted">{{ $notification->created_at->format('Y-m-d H:i') }}</small>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
     </div>
-    @endsection
+@endsection
 
     @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

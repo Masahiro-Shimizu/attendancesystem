@@ -61,10 +61,34 @@
                                     @csrf
                                     <button type="submit" class="btn btn-success btn-sm">承認</button>
                                 </form>
-                                <form action="{{ route('monthly_report.reject', $application->id) }}" method="POST" style="display:inline-block;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger btn-sm">却下</button>
-                                </form>
+                                <!-- 差し戻しボタン -->
+                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#rejectModal-{{ $application->id }}">
+                                    却下
+                                </button>
+
+                                <!-- 差し戻し用のモーダル -->
+                                <div class="modal fade" id="rejectModal-{{ $application->id }}" tabindex="-1" aria-labelledby="rejectModalLabel-{{ $application->id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('monthly_report.reject', $application->id) }}" method="POST">
+                                            @csrf
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="rejectModalLabel-{{ $application->id }}">差し戻しコメントを入力</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <textarea name="reject_comment" class="form-control" rows="4" placeholder="コメントを入力してください"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+                                                    <button type="submit" class="btn btn-danger">差し戻し</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             @elseif ($application instanceof \App\Models\LeaveRequest)
                                 <form action="{{ route('admin.leave_requests.approve', $application->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
@@ -73,7 +97,35 @@
                                 <form action="{{ route('admin.leave_requests.reject', $application->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     <button type="submit" class="btn btn-danger btn-sm">却下</button>
+                                    <!-- 差し戻し用のモーダル -->
+                                <div class="modal fade" id="rejectModal-{{ $application->id }}" tabindex="-1" aria-labelledby="rejectModalLabel-{{ $application->id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('admin.leave_requests.reject', $application->id) }}" method="POST">
+                                        @csrf
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="rejectModalLabel-{{ $application->id }}">差し戻しコメントを入力</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <textarea name="reject_comment" class="form-control" rows="4" placeholder="コメントを入力してください"></textarea>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+                                                <button type="submit" class="btn btn-danger">差し戻し</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                                 </form>
+                            @endif
+                        </td>
+                        <td>
+                            @if ($application->status == 'rejected')
+                                <strong>却下理由:</strong> {{ $application->reject_comment }}
                             @endif
                         </td>
                     </tr>

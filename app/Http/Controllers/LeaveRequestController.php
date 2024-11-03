@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\LeaveRequest;
+use App\Models\MonthlyReport;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -52,15 +54,39 @@ class LeaveRequestController extends Controller
         ]);
     }
 
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
-        $leaveRequest = LeaveRequest::findOrFail($id);
-        $leaveRequest->update(['status' => 'rejected']);
-
-        return response()->json([
-            'message' => '申請を却下しました。',
-            'status' => '却下'
+        $request->validate([
+            'reject_comment' => 'nullable|string|max:500', // コメントをバリデーション
         ]);
+
+
+        $leaveRequest = LeaveRequest::findOrFail($id);
+        $leaveRequest->status = 'rejected';
+        $leaveRequest->reject_comment = $request->input('reject_comment'); // コメントを保存
+        $leaveRequest->rejected_by = auth('admin')->user()->name;  // ログイン中の管理者名を保存
+        $leaveRequest->save();
+
+
+        return redirect()->back()->with('success', '申請を差し戻しました');
+    }
+
+    public function rejectLeaveRequest($id, Request $request)
+    {
+        // 却下する処理
+        $leaveRequest = LeaveRequest::find($id);
+        $leaveRequest->status = 'rejected';
+        $leaveRequest->reject_comment = $request->input('reject_comment');
+        $leaveRequest->save();
+
+        // 通知を作成
+        Notification::create([
+            'user_id' => $leaveRequest->user_id,
+            'type' => '休暇申請',
+            'message' => 'あなたの休暇申請が却下されました。理由: ' . $leaveRequest->reject_comment,
+        ]);
+
+        return redirect()->back()->with('success', '申請を却下しました。');
     }
 }
 

@@ -13,7 +13,12 @@ class MonthlyReportController extends Controller
     // 月報申請フォームを表示するメソッド
     public function create()
     {
-        return view('monthly_report.create');
+        // ログインユーザーの最新の月報申請を取得
+        $latestApplication = MonthlyReport::where('user_id', auth()->id())
+         ->orderBy('created_at', 'desc')
+         ->first();
+
+        return view('monthly_report.create', compact('latestApplication'));
     }
 
     // 月報申請を保存するメソッド
@@ -35,6 +40,27 @@ class MonthlyReportController extends Controller
             'month' => $month,  // 修正後の月
             'status' => 'pending',  // 申請時は保留状態
         ]);
+
+        // ログインユーザーの同じ月の最新の申請を取得
+        $existingApplication = MonthlyReport::where('user_id', auth()->id())
+            ->where('month', $month)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($existingApplication && $existingApplication->status == 'rejected') {
+            // 差し戻しのコメントと情報をリセット
+            $existingApplication->reject_comment = null;
+            $existingApplication->rejected_by = null;  // 管理者名のフィールドもリセット
+            $existingApplication->status = 'pending';
+            $existingApplication->save();
+        } else {
+            // 新規作成
+            MonthlyReport::create([
+                'user_id' => auth()->id(),
+                'month' => $month,
+                'status' => 'pending',
+            ]);
+        }    
 
         return response()->json(['message' => '月報を申請しました。']);
         //redirect()->route('monthly_report.create')->with('success', '月報を申請しました');
@@ -58,12 +84,21 @@ class MonthlyReportController extends Controller
     }
 
     // 却下処理
-    public function reject($id)
+    public function reject(Request $request,$id)
     {
-        $report = MonthlyReport::findOrFail($id);
-        $report->status = 'rejected';
-        $report->save();
+        // 月報申請データを取得
+        $monthlyReport = MonthlyReport::find($id);
 
-        return redirect()->back()->with('success', '月報が却下されました');
+        // 月報申請が存在しない場合の処理
+        if (!$monthlyReport) {
+            return redirect()->back()->with('error', '月報申請が見つかりませんでした。');
+        }
+
+        // 差し戻しコメントを保存
+        $monthlyReport->status = 'rejected';
+        $monthlyReport->reject_comment = $request->input('reject_comment');
+        $monthlyReport->save();
+
+        return redirect()->back()->with('success', '月報申請を差し戻しました。');
     }
 }

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Time;
+use App\Models\MonthlyReport;
+use App\Models\LeaveRequest;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -14,7 +17,6 @@ class TimesController extends Controller
     {
         $today = Carbon::today()->startOfDay();
 
-        // 最新の3件の勤怠データを取得
         $items = Time::where('user_id', Auth::id())
             ->orderBy('punchIn', 'desc')
             ->get()  // クエリビルダーではなくコレクションを返す
@@ -23,8 +25,20 @@ class TimesController extends Controller
             })
             ->take(3);
 
-        // 'home' ビューにデータを渡す
-        return view('home', ['items' => $items]);
+        $rejectedMonthlyReports = MonthlyReport::where('user_id', auth()->id())
+                                 ->where('status', 'rejected')
+                                 ->get();
+
+        $rejectedLeaveRequests = LeaveRequest::where('user_id', auth()->id())
+                               ->where('status', 'rejected')
+                               ->get();
+
+        $notifications = Notification::where('user_id', auth()->id())
+                       ->where('is_checked', false)
+                       ->orderBy('created_at', 'desc')
+                       ->get();
+
+        return view('home', compact('items', 'rejectedMonthlyReports', 'rejectedLeaveRequests', 'notifications'));
     }
 
     public function punchIn()
