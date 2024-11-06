@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TimesController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AdminHomeController;
+use App\Http\Controllers\AdminController;
 use App\Models\Times;
 
 /*
@@ -77,8 +80,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/leave_requests/reject/{id}', [App\Http\Controllers\LeaveRequestController::class, 'reject'])->name('leave_requests.reject');
 
     //お知らせ確認
-    Route::post('/notifications/check/{id}', [App\Http\Controllers\NotificationController::class, 'markAsChecked'])->name('notifications.check');
-    Route::patch('/notifications/check/{id}', [NotificationController::class, 'check'])->name('notifications.check');
-
+    Route::post('/notifications/check/{id}', [NotificationController::class, 'check'])->name('notifications.check');
+    Route::post('/notifications/mark-as-read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 });
 

@@ -72,31 +72,41 @@
                 </ul>
             </div>
 
-            <div class="col-md-4">
-            <h2>通知</h2>
-            <ul class="list-group">
-                @if($notifications->isEmpty())
-                    <p>新しい通知はありません。</p>
+            <div class="col-md-6">
+                <h4>通知</h4>
+            <div class="notifications">
+                @if ($notifications->isEmpty())
+                    <p>通知はありません</p>
                 @else
-                    <ul class="list-group">
-                @foreach($notifications as $notification)
-                    <li class="list-group-item {{ $notification->is_checked ? 'bg-light' : '' }}">
-                    <div>                   
-                        {{ $notification->message }}
-                        @if(!$notification->is_checked)
-                                <form method="POST" action="{{ route('notifications.check', $notification->id) }}" style="display: inline;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-link btn-sm">確認</button>
-                                </form>
-                            @else
-                                <span class="text-muted">確認済み</span>
+                    <ul>
+                        @foreach ($notifications as $notification)
+                        <li @if($notification->is_checked) style="color: gray;" @endif>
+                            {{ $notification->message }}
+
+                            <!-- 申請のステータスを漢字で表示 -->
+                        <span>
+                            状態:
+                            @if ($notification->status == 'pending')
+                                保留中
+                            @elseif ($notification->status == 'approved')
+                                承認済み
+                            @elseif ($notification->status == 'rejected')
+                                却下
                             @endif
-                        <small class="text-muted">{{ $notification->created_at->format('Y-m-d H:i') }}</small>
-                    </li>
-                @endforeach
-            </ul>
-        @endif
-    </div>
+                        </span>
+                        
+                            @if (!$notification->is_checked)
+                                <form method="POST" action="{{ route('notifications.check', $notification->id) }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-primary">確認済み</button>
+                                </form>
+                            @endif
+                        </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+            </div>
 @endsection
 
     @section('scripts')
@@ -219,5 +229,19 @@
             });
         });
     });
+
+    function markNotificationAsRead(notificationId) {
+    $.ajax({
+        url: `/notifications/check/${notificationId}`,
+        method: 'POST',  // 必ず POST メソッドを指定
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        success: function(response) {
+            alert(response.message);
+        },
+        error: function(xhr) {
+            alert('エラーが発生しました。');
+        }
+    });
+}
 </script>
 @endsection

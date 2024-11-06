@@ -24,4 +24,18 @@ class MonthlyReport extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getStatusKanjiAttribute()
+    {
+        switch ($this->status) {
+            case 'pending':
+                return '保留中';
+            case 'approved':
+                return '承認済み';
+            case 'rejected':
+                return '却下';
+            default:
+                return '不明な状態';
+        }
+    }
 }

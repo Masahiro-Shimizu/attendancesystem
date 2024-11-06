@@ -67,7 +67,14 @@ class LeaveRequestController extends Controller
         $leaveRequest->rejected_by = auth('admin')->user()->name;  // ログイン中の管理者名を保存
         $leaveRequest->save();
 
-
+        // 通知を作成
+        Notification::create([
+            'user_id' => $leaveRequest->user_id,
+            'type' => 'leave_rejected', // 申請却下のタイプ
+            'message' => '申請が却下されました。理由: ' . $leaveRequest->reject_comment,
+            'is_checked' => 0,
+        ]);
+        
         return redirect()->back()->with('success', '申請を差し戻しました');
     }
 
@@ -82,8 +89,9 @@ class LeaveRequestController extends Controller
         // 通知を作成
         Notification::create([
             'user_id' => $leaveRequest->user_id,
-            'type' => '休暇申請',
-            'message' => 'あなたの休暇申請が却下されました。理由: ' . $leaveRequest->reject_comment,
+            'type' => 'leave_rejected', // 申請却下のタイプ
+            'message' => '申請が却下されました。理由: ' . $leaveRequest->reject_comment,
+            'is_checked' => 0,
         ]);
 
         return redirect()->back()->with('success', '申請を却下しました。');
