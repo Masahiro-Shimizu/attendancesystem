@@ -79,22 +79,9 @@
                     <p>通知はありません</p>
                 @else
                     <ul>
-                        @foreach ($notifications as $notification)
+                    @foreach ($notifications as $notification)
                         <li @if($notification->is_checked) style="color: gray;" @endif>
                             {{ $notification->message }}
-
-                            <!-- 申請のステータスを漢字で表示 -->
-                        <span>
-                            状態:
-                            @if ($notification->status == 'pending')
-                                保留中
-                            @elseif ($notification->status == 'approved')
-                                承認済み
-                            @elseif ($notification->status == 'rejected')
-                                却下
-                            @endif
-                        </span>
-                        
                             @if (!$notification->is_checked)
                                 <form method="POST" action="{{ route('notifications.check', $notification->id) }}">
                                     @csrf
@@ -102,8 +89,8 @@
                                 </form>
                             @endif
                         </li>
-                        @endforeach
-                    </ul>
+                    @endforeach
+                </ul>
                 @endif
             </div>
             </div>

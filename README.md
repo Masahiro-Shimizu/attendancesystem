@@ -75,7 +75,7 @@ https://qiita.com/yyy752/items/820260163d4883efb132
 
 ## README
 ## 一覧画面　（ホーム）
-https://github.com/user-attachments/assets/48bb9146-3d25-4712-bb71-b8dc78adfd76
+https://github.com/user-attachments/assets/ea921286-b6bb-4a21-b465-8039682d5f6f
 
 ## 詳細画面(コメント機能追加)
 https://github.com/user-attachments/assets/2819a062-94bb-4ec7-a9cd-7e9d1a59fbd5
@@ -84,7 +84,19 @@ https://github.com/user-attachments/assets/2819a062-94bb-4ec7-a9cd-7e9d1a59fbd5
 https://github.com/user-attachments/assets/51b08854-875a-412c-82ba-8b9290634124
 
 ## 月報画面
-https://github.com/user-attachments/assets/d17d4f94-3894-45f9-a8ee-83d991232bd3
+https://github.com/user-attachments/assets/d09853f4-d2e7-44d4-bd24-7a9dd92b81a9
+
+## 月報申請
+https://github.com/user-attachments/assets/4d94a234-1ea9-498f-8f15-1e55bfb271f7
+
+## 申請作成
+https://github.com/user-attachments/assets/a3b398ca-af10-49e4-ab13-1927a50cd6ce
+
+## 申請一覧
+https://github.com/user-attachments/assets/fe9b6371-4c12-4b91-8382-b66f45206d5c
 
 ## 管理者画面
 https://github.com/user-attachments/assets/2a10686a-649f-4dd9-beb9-9834887d5db7
+
+##　差し戻しモーダル
+https://github.com/user-attachments/assets/b3994fd3-752f-4ffa-9329-b7261a1c910e

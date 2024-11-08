@@ -9,7 +9,7 @@
     @if($applications->isEmpty())
         <p>申請はありません。</p>
     @else
-        <table class="table">
+        <table class="table table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -38,7 +38,6 @@
                                 @endif
                             @endif
                         </td>
-                        <!-- 月報申請の場合はmonth、有給休暇申請の場合はstart_dateを表示 -->
                         <td>
                             @if ($application instanceof \App\Models\MonthlyReport)
                                 {{ $application->month }}
@@ -94,38 +93,34 @@
                                     @csrf
                                     <button type="submit" class="btn btn-success btn-sm">承認</button>
                                 </form>
-                                <form action="{{ route('admin.leave_requests.reject', $application->id) }}" method="POST" style="display:inline-block;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger btn-sm">却下</button>
-                                    <!-- 差し戻し用のモーダル -->
+                                <!-- 差し戻しボタン -->
+                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#rejectModal-{{ $application->id }}">
+                                    却下
+                                </button>
+
+                                <!-- 差し戻し用のモーダル -->
                                 <div class="modal fade" id="rejectModal-{{ $application->id }}" tabindex="-1" aria-labelledby="rejectModalLabel-{{ $application->id }}" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <form action="{{ route('admin.leave_requests.reject', $application->id) }}" method="POST">
-                                        @csrf
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="rejectModalLabel-{{ $application->id }}">差し戻しコメントを入力</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
+                                            @csrf
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="rejectModalLabel-{{ $application->id }}">差し戻しコメントを入力</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <textarea name="reject_comment" class="form-control" rows="4" placeholder="コメントを入力してください"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+                                                    <button type="submit" class="btn btn-danger">差し戻し</button>
+                                                </div>
                                             </div>
-                                            <div class="modal-body">
-                                                <textarea name="reject_comment" class="form-control" rows="4" placeholder="コメントを入力してください"></textarea>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
-                                                <button type="submit" class="btn btn-danger">差し戻し</button>
-                                            </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
-                                </form>
-                            @endif
-                        </td>
-                        <td>
-                            @if ($application->status == 'rejected')
-                                <strong>却下理由:</strong> {{ $application->reject_comment }}
                             @endif
                         </td>
                     </tr>
@@ -146,45 +141,6 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
-        // 承認ボタンのクリックイベント
-        $('.approve-btn').on('click', function() {
-            const requestId = $(this).data('id');
-            handleRequest(requestId, 'approve');
-        });
-
-        // 却下ボタンのクリックイベント
-        $('.reject-btn').on('click', function() {
-            const requestId = $(this).data('id');
-            handleRequest(requestId, 'reject');
-        });
-
-        // 承認・却下処理の共通関数
-        function handleRequest(requestId, action) {
-            $.ajax({
-                url: `/admin/leave_requests/${action}/${requestId}`,
-                method: 'POST',
-                success: function(response) {
-                    // 成功した場合、ステータスを更新してメッセージを表示
-                    $(`#request-${requestId} .status`).text(response.status);
-                    showMessage(response.message, 'success');
-                },
-                error: function(xhr) {
-                    showMessage('エラーが発生しました。再度お試しください。', 'danger');
-                }
-            });
-        }
-
-        // ポップアップメッセージを表示する関数
-        function showMessage(message, type) {
-            const popupMessage = $('<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' + message + '</div>');
-            $('body').append(popupMessage);
-            setTimeout(function() {
-                popupMessage.fadeOut(function() {
-                    $(this).remove();
-                });
-            }, 3000);
-        }
     });
 </script>
 @endsection

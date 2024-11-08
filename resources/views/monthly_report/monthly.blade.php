@@ -42,6 +42,7 @@
                         <th>退勤時間</th>
                         <th>合計勤務時間</th>
                         <th>休憩時間</th>
+                        <th>実労働時間</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,6 +73,7 @@
                                     -
                                 @endif
                             </td>
+                            <td>{{ $time->actual_working_time ?? '未計算' }}</td> <!-- 実労働時間 --></td>
                         </tr>
                     @endforeach
                 </tbody>

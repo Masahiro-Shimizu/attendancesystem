@@ -241,16 +241,39 @@ class TimesController extends Controller
     public function monthlyReport(Request $request)
     {
         // 現在の年と月を取得
-        $year = $request->input('year', Carbon::now()->year);
-        $month = $request->input('month', Carbon::now()->month);
+    $year = $request->input('year', Carbon::now()->year);
+    $month = $request->input('month', Carbon::now()->month);
 
-        // 該当する月のデータを取得 (ここでは例として)
-        $times = Time::whereYear('punchIn', $year)
-                    ->whereMonth('punchIn', $month)
-                    ->get();
+    // 該当する月のデータを取得
+    $times = Time::whereYear('punchIn', $year)
+                ->whereMonth('punchIn', $month)
+                ->get();
 
-        // ビューにデータを渡す
-        return view('monthly_report.monthly', compact('year', 'month', 'times'));
+    // 各日の合計勤務時間と実労働時間を計算
+    foreach ($times as $time) {
+        $punchIn = Carbon::parse($time->punchIn);
+        $punchOut = $time->punchOut ? Carbon::parse($time->punchOut) : null;
+        
+        // 勤務時間の初期化
+        $totalWorkingTime = 0;
+
+        if ($punchOut) {
+            // 出勤時間と退勤時間の差（分）を計算して勤務時間に変換
+            $totalWorkingTime = $punchIn->diffInMinutes($punchOut) / 60;
+
+            // 休憩時間がある場合、勤務時間から休憩時間を引く
+            if ($time->break_time) {
+                $breakTime = Carbon::parse($time->break_time)->hour + (Carbon::parse($time->break_time)->minute / 60);
+                $totalWorkingTime -= $breakTime;
+            }
+        }
+
+        // 実労働時間を新しいフィールドに格納（例: 実労働時間を分または時間に変換して表示）
+        $time->actual_working_time = number_format($totalWorkingTime, 1) . '時間';
+    }
+
+       // ビューにデータを渡す
+       return view('monthly_report.monthly', compact('year', 'month', 'times'));
     }
 
 }

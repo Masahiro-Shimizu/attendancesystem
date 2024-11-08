@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\MonthlyReport;
 use App\Models\Time; // 勤怠データのモデル
+use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -84,21 +85,26 @@ class MonthlyReportController extends Controller
     }
 
     // 却下処理
-    public function reject(Request $request,$id)
+    public function reject(Request $request, $id)
     {
-        // 月報申請データを取得
-        $monthlyReport = MonthlyReport::find($id);
+        $request->validate([
+            'reject_comment' => 'nullable|string|max:500',
+        ]);
 
-        // 月報申請が存在しない場合の処理
-        if (!$monthlyReport) {
-            return redirect()->back()->with('error', '月報申請が見つかりませんでした。');
-        }
-
-        // 差し戻しコメントを保存
+        $monthlyReport = MonthlyReport::findOrFail($id);
         $monthlyReport->status = 'rejected';
         $monthlyReport->reject_comment = $request->input('reject_comment');
+        $monthlyReport->rejected_by = auth()->user()->name;
         $monthlyReport->save();
 
-        return redirect()->back()->with('success', '月報申請を差し戻しました。');
+        // 通知を作成
+        Notification::create([
+            'user_id' => $monthlyReport->user_id,
+            'type' => 'monthly_report_rejected', // 適切なタイプを指定
+            'message' => "月報申請が却下されました。理由: " . $request->input('reject_comment'),
+            'is_checked' => false,
+        ]);
+
+        return redirect()->back()->with('success', '申請を差し戻しました');
     }
 }

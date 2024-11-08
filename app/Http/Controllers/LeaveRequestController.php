@@ -57,29 +57,31 @@ class LeaveRequestController extends Controller
     public function reject(Request $request, $id)
     {
         $request->validate([
-            'reject_comment' => 'nullable|string|max:500', // コメントをバリデーション
+            'reject_comment' => 'nullable|string|max:500',
         ]);
-
 
         $leaveRequest = LeaveRequest::findOrFail($id);
         $leaveRequest->status = 'rejected';
-        $leaveRequest->reject_comment = $request->input('reject_comment'); // コメントを保存
-        $leaveRequest->rejected_by = auth('admin')->user()->name;  // ログイン中の管理者名を保存
+        $leaveRequest->reject_comment = $request->input('reject_comment');
+        $leaveRequest->rejected_by = auth()->user()->name;
         $leaveRequest->save();
 
         // 通知を作成
         Notification::create([
             'user_id' => $leaveRequest->user_id,
-            'type' => 'leave_rejected', // 申請却下のタイプ
-            'message' => '申請が却下されました。理由: ' . $leaveRequest->reject_comment,
-            'is_checked' => 0,
+            'type' => 'leave_rejected', // ここでtypeを指定
+            'message' => "休暇申請が却下されました。理由: " . $request->input('reject_comment'),
+            'is_checked' => false,
         ]);
-        
+
         return redirect()->back()->with('success', '申請を差し戻しました');
     }
-
     public function rejectLeaveRequest($id, Request $request)
     {
+        $request->validate([
+            'reject_comment' => 'nullable|string|max:500',
+        ]);
+        
         // 却下する処理
         $leaveRequest = LeaveRequest::find($id);
         $leaveRequest->status = 'rejected';
