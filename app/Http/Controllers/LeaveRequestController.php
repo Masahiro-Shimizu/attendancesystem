@@ -66,11 +66,21 @@ class LeaveRequestController extends Controller
         $leaveRequest->rejected_by = auth()->user()->name;
         $leaveRequest->save();
 
+        // 申請タイプに応じたラベルを作成
+        $leaveType = '';
+        if ($leaveRequest->type == 'paid_leave') {
+            $leaveType = '有給休暇';
+            } elseif ($leaveRequest->type == 'vacation') {
+            $leaveType = '休暇';
+            } elseif ($leaveRequest->type == 'absence') {
+            $leaveType = '欠勤';
+        }
+
         // 通知を作成
         Notification::create([
             'user_id' => $leaveRequest->user_id,
             'type' => 'leave_rejected', // ここでtypeを指定
-            'message' => "休暇申請が却下されました。理由: " . $request->input('reject_comment'),
+            'message' => "{$leaveType}申請が却下されました。理由: " . $leaveRequest->reject_comment,
             'is_checked' => false,
         ]);
 
@@ -81,7 +91,7 @@ class LeaveRequestController extends Controller
         $request->validate([
             'reject_comment' => 'nullable|string|max:500',
         ]);
-        
+
         // 却下する処理
         $leaveRequest = LeaveRequest::find($id);
         $leaveRequest->status = 'rejected';
