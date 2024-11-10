@@ -9,6 +9,8 @@
 
     <title>{{ config('app.name','勤怠管理システム') }}</title>
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
+
     <!-- jQueryの読み込み -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -18,6 +20,8 @@
 
     <!--<link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">-->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 
     <!-- Scripts -->
     <!--<script src="{{ asset('js/app.js') }}" defer></script>-->
@@ -72,12 +76,6 @@
                             <a class="nav-link" href="{{ route('leave_requests.create') }}">申請作成</a>
                         </li>
                     @endif
-                    </ul>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
                     </ul>
 
                     <!-- Right Side Of Navbar -->

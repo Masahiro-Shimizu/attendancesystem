@@ -171,16 +171,47 @@ class TimesController extends Controller
         return response()->json(['message' => '休憩終了処理に失敗しました'], 400);
     }
     
-    public function detail($id)
+    public function detailByDate(Request $request)
+    {
+        // 日付をリクエストから取得
+        $date = $request->input('date');
+
+        // ユーザーの特定の日付の勤怠データを取得
+        $times = Time::where('user_id', Auth::id())
+                 ->whereDate('punchIn', $date)
+                 ->first();
+
+        if ($times) {
+            return response()->json(['status' => 'success', 'data' => $times]);
+        }
+
+        return response()->json(['status' => 'error', 'message' => '指定された日の勤怠データが見つかりません']);
+    }
+
+    public function detail($id,Request $request)
     {
         $times = Time::find($id);
 
-        if (!$times) {
-            return redirect()->back()->with('error', '該当の勤怠データが見つかりません。');
+        // 日付をリクエストパラメータから取得（例: AJAXリクエストで送信された日付）
+        $date = $request->input('date');
+
+        if ($date) {
+            // ユーザーの特定の日付の勤怠データを取得
+            $times = Time::where('user_id', Auth::id())
+                     ->whereDate('punchIn', $date)
+                     ->first();
+
+        if ($times) {
+            return response()->json(['status' => 'success', 'data' => $times]);
         }
 
-        // ビューに勤怠データを渡す
-        return view('detail', compact('times'));
+        $showModal = $request->query('showModal', false);
+
+        return response()->json(['status' => 'error', 'message' => '指定された日の勤怠データが見つかりません']);
+    }
+
+     // カレンダー表示用のビューを返す
+     return view('detail');
     }
 
     public function edit($id)

@@ -14,14 +14,34 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($leaveRequests as $request)
-            <tr>
-                <td>{{ $request->type }}</td>
-                <td>{{ $request->start_date }}</td>
-                <td>{{ $request->end_date ?? 'なし' }}</td>
-                <td>{{ $request->reason ?? 'なし' }}</td>
-                <td>{{ $request->status }}</td>
-            </tr>
+            @foreach ($leaveRequests as $request)
+                <tr>
+                    <td>
+                        @if ($request->type === 'paid_leave')
+                            有給休暇
+                        @elseif ($request->type === 'vacation')
+                            休暇
+                        @elseif ($request->type === 'absent')
+                            欠勤
+                        @else
+                            {{ $request->type }}
+                        @endif
+                    </td>
+                    <td>{{ $request->start_date }}</td>
+                    <td>{{ $request->end_date ?? 'なし' }}</td>
+                    <td>{{ $request->reason }}</td>
+                    <td>
+                        @if ($request->status === 'pending')
+                            保留中
+                        @elseif ($request->status === 'approved')
+                            承認済み
+                        @elseif ($request->status === 'rejected')
+                            却下
+                        @else
+                            {{ $request->status }}
+                        @endif
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>

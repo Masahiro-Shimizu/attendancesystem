@@ -62,7 +62,7 @@
                             <p>出勤: {{ $records->first()->punchIn ?? '打刻はありません' }}</p>
                             <p>退勤: {{ $records->sortByDesc('punchOut')->first()->punchOut ?? '打刻はありません' }}</p>
                             <button class="btn btn-secondary btn-sm">
-                                <a href="{{ route('times.detail', $records->first()->id) }}" style="color:white;">詳細</a>
+                                <a href="{{ route('times.detail', ['id' => $records->first()->id, 'showModal' => 'true']) }}" style="color:white;">詳細</a>
                             </button>
                             <button class="btn btn-secondary btn-sm">
                                 <a href="{{ route('times.edit', $records->first()->id) }}" style="color:white;">編集</a>

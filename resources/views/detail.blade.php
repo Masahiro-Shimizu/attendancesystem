@@ -2,39 +2,71 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">打刻詳細</div>
+    <h1>勤怠詳細</h1>
+    <div id="calendar"></div>
 
-                <div class="card-body">
-                    <p><strong>出勤時刻：</strong> {{ $times->punchIn ? $times->punchIn->format('Y-m-d H:i') : '記録なし' }}</p>
-                    <p><strong>退勤時刻：</strong> {{ $times->punchOut ? $times->punchOut->format('Y-m-d H:i') : '記録なし' }}</p>
-
-                    <dt class="col-sm-3">休憩時間</dt>
-                        <dd class="col-sm-9">
-                            @if($times->break_times)
-                                {{ \Carbon\Carbon::parse($time->break_times)->format('H:i') }}  <!-- 時間:分で表示 -->
-                            @else
-                                休憩なし
-                            @endif
-                        </dd>
-
-                        <dt class="col-sm-3">合計勤務時間</dt>
-                        <dd class="col-sm-9">
-                            @if($times->punchOut)
-                                {{ $times->punchIn->diffForHumans($times->punchOut, true) }}  <!-- 出勤と退勤の差 -->
-                            @else
-                                退勤が記録されていません
-                            @endif
-                        </dd>
-                    <p><strong>コメント:</strong> {{ $times->comments ?? 'コメントはありません' }}</p>
-
-                    <a href="{{ route('times.edit', ['id' => $times->id]) }}" class="btn btn-primary">編集する</a>
-                    <a href="{{ route('home') }}" class="btn btn-primary">戻る</a>
+    <!-- 勤怠詳細を表示するモーダル -->
+    <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attendanceModalLabel">打刻詳細</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>出勤時刻:</strong> <span id="punchInTime"></span></p>
+                    <p><strong>退勤時刻:</strong> <span id="punchOutTime"></span></p>
+                    <p><strong>休憩時間:</strong> <span id="breakTime"></span></p>
+                    <p><strong>合計勤務時間:</strong> <span id="totalHours"></span></p>
+                    <p><strong>コメント:</strong> <span id="comments"></span></p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    // FullCalendarの設定
+    $('#calendar').fullCalendar({
+        locale: 'ja',
+        selectable: true,
+        select: function(start) {
+            const selectedDate = start.format('YYYY-MM-DD');
+
+            console.log("AJAXリクエスト開始: ", selectedDate);
+            $.ajax({
+                url: '{{ route("times.dateDetail") }}',
+                method: 'GET',
+                data: { date: selectedDate },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        const data = response.data;
+                        $('#punchInTime').text(data.punchIn || 'N/A');
+                        $('#punchOutTime').text(data.punchOut || 'N/A');
+                        $('#breakTime').text(data.break_time || 'N/A');
+                        $('#totalHours').text(data.total_hours || 'N/A');
+                        $('#comments').text(data.comments || 'N/A');
+                        $('#attendanceModal').modal('show');
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        }
+    });
+
+    // URLにshowModal=trueがある場合にモーダルを自動表示
+    const urlParams = new URLSearchParams(window.location.search);
+    const showModal = urlParams.get('showModal');
+
+    if (showModal === 'true') {
+        $('#attendanceModal').modal('show');
+    }
+});
+</script>
 @endsection
