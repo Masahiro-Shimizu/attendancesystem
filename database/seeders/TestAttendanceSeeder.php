@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class TestAttendanceSeeder extends Seeder
 {
-        /**
+    /**
      * 祝日データを取得
      */
     private function getHolidays()
@@ -40,11 +40,12 @@ class TestAttendanceSeeder extends Seeder
 
             // 勤怠データを挿入
             Time::create([
-                'user_id'   => 4, // テストデータ用にユーザーID 1を指定（適宜変更）
+                'user_id'   => 1, // テストデータ用にユーザーID 1を指定（適宜変更）
                 'punchIn'   => $date->copy()->setTime(10, 0, 0), // 出勤時間を10:00に設定
                 'punchOut'  => $date->copy()->setTime(19, 0, 0), // 退勤時間を19:00に設定
+                'break_time' => '01:00:00', // 休憩時間を1時間に設定
+                'comments'   => 'テストコメント', // 任意のコメント
             ]);
         }
     }
 }
-

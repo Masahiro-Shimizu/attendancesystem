@@ -9,10 +9,10 @@
 
     <title>{{ config('app.name','勤怠管理システム') }}</title>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
+    
 
     <!-- jQueryの読み込み -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -21,6 +21,7 @@
     <!--<link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">-->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 
     <!-- Scripts -->
@@ -48,7 +49,7 @@
                     @if (Auth::check()) <!-- ログインしているか確認 -->    
                         <!-- 勤怠詳細へのリンク -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('times.detail', ['id' => Auth::id()]) }}">勤怠詳細</a> <!-- idを渡す -->
+                            <a class="nav-link" href="{{ route('times.detail', ['id' => Auth::id(), 'showModal' => 'true']) }}">勤怠詳細</a><!-- idを渡す -->
                         </li>
 
                         <!-- 勤怠編集へのリンク -->

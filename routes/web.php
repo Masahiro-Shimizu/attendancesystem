@@ -61,7 +61,6 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
    
     //詳細画面
-    // web.php
     Route::get('/times/detail-by-date', [App\Http\Controllers\TimesController::class, 'detailByDate'])->name('times.dateDetail');
     Route::get('/times/{id}',[App\Http\Controllers\TimesController::class, 'detail'])->name('times.detail');
     

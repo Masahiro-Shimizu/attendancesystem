@@ -35,9 +35,22 @@ $(document).ready(function() {
     $('#calendar').fullCalendar({
         locale: 'ja',
         selectable: true,
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+        },
+        buttonText: {
+            today: '今日',
+            month: '月',
+            week: '週',
+            day: '日'
+        },
+        dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'], // 曜日を漢字で表示
+        monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'], // 月名を日本語に
+
         select: function(start) {
             const selectedDate = start.format('YYYY-MM-DD');
-
             console.log("AJAXリクエスト開始: ", selectedDate);
             $.ajax({
                 url: '{{ route("times.dateDetail") }}',
@@ -49,7 +62,7 @@ $(document).ready(function() {
                         $('#punchInTime').text(data.punchIn || 'N/A');
                         $('#punchOutTime').text(data.punchOut || 'N/A');
                         $('#breakTime').text(data.break_time || 'N/A');
-                        $('#totalHours').text(data.total_hours || 'N/A');
+                        $('#totalHours').text(response.total_hours || 'N/A');
                         $('#comments').text(data.comments || 'N/A');
                         $('#attendanceModal').modal('show');
                     } else {

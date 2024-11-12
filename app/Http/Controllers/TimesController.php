@@ -188,31 +188,41 @@ class TimesController extends Controller
         return response()->json(['status' => 'error', 'message' => '指定された日の勤怠データが見つかりません']);
     }
 
-    public function detail($id,Request $request)
+    public function detail($id, Request $request)
     {
+        \Log::info('detail method called with id:', ['id' => $id]);
+
+        // `$id` に基づく勤怠データを取得
         $times = Time::find($id);
 
-        // 日付をリクエストパラメータから取得（例: AJAXリクエストで送信された日付）
+        if (!$times) {
+            return redirect()->back()->with('error', '該当の勤怠データが見つかりません。');
+        }
+
+        // 日付をリクエストパラメータから取得
         $date = $request->input('date');
+        $showModal = $request->query('showModal', false);
 
         if ($date) {
             // ユーザーの特定の日付の勤怠データを取得
             $times = Time::where('user_id', Auth::id())
-                     ->whereDate('punchIn', $date)
-                     ->first();
+                        ->whereDate('punchIn', $date)
+                        ->first();
 
-        if ($times) {
-            return response()->json(['status' => 'success', 'data' => $times]);
+            if ($times) {
+                // 日付で見つかったデータを JSON で返す（AJAX リクエスト用）
+                return response()->json(['status' => 'success', 'data' => $times]);
+            } else {
+                return response()->json(['status' => 'error', 'message' => '指定された日の勤怠データが見つかりません']);
+            }
         }
 
         $showModal = $request->query('showModal', false);
-
-        return response()->json(['status' => 'error', 'message' => '指定された日の勤怠データが見つかりません']);
+        // `$date`がない場合、通常のビューを返す
+        return view('detail', compact('times', 'showModal'));
     }
 
-     // カレンダー表示用のビューを返す
-     return view('detail');
-    }
+    
 
     public function edit($id)
     {
