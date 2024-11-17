@@ -7,6 +7,8 @@ use App\Models\MonthlyReport;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ApprovalHistory;
+
 
 class LeaveRequestController extends Controller
 {
@@ -48,10 +50,22 @@ class LeaveRequestController extends Controller
         $leaveRequest = LeaveRequest::findOrFail($id);
         $leaveRequest->update(['status' => 'approved']);
 
-        return response()->json([
-            'message' => '申請を承認しました。',
-            'status' => '承認済み'
+        // 承認履歴の保存
+        ApprovalHistory::create([
+            'application_id' => $id,
+            'application_type' => LeaveRequest::class,
+            'admin_id' => auth()->id(),
+            'action' => 'approved',
+            'comment' => '承認しました。',
         ]);
+
+        //return resonse()->json([
+            //'message' => '申請を承認しました。',
+            //'status' => '承認済み'
+        //]);
+
+        // 承認完了後に管理者ダッシュボードへリダイレクト
+        return redirect()->route('admin.home')->with('success', '申請を承認しました。');
     }
 
     public function reject(Request $request, $id)
@@ -97,6 +111,15 @@ class LeaveRequestController extends Controller
         $leaveRequest->status = 'rejected';
         $leaveRequest->reject_comment = $request->input('reject_comment');
         $leaveRequest->save();
+
+       // 承認履歴の保存
+       ApprovalHistory::create([
+            'application_id' => $id,
+            'application_type' => LeaveRequest::class,
+            'admin_id' => auth()->id(),
+            'action' => 'rejected',
+            'comment' => $request->input('reject_comment'),
+        ]);
 
         // 通知を作成
         Notification::create([

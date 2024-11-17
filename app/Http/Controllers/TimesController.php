@@ -171,18 +171,20 @@ class TimesController extends Controller
         return response()->json(['message' => '休憩終了処理に失敗しました'], 400);
     }
     
-    public function detailByDate(Request $request)
+    public function showCalendar(Request $request)
     {
-        // 日付をリクエストから取得
-        $date = $request->input('date');
+        return view('calendar');
+    }
 
-        // ユーザーの特定の日付の勤怠データを取得
+    public function getIdByDate(Request $request)
+    {
+        $date = $request->input('date');
         $times = Time::where('user_id', Auth::id())
-                 ->whereDate('punchIn', $date)
-                 ->first();
+                      ->whereDate('punchIn', $date)
+                      ->first();
 
         if ($times) {
-            return response()->json(['status' => 'success', 'data' => $times]);
+            return response()->json(['status' => 'success', 'data' => ['id' => $times->id]]);
         }
 
         return response()->json(['status' => 'error', 'message' => '指定された日の勤怠データが見つかりません']);
@@ -194,35 +196,32 @@ class TimesController extends Controller
 
         // `$id` に基づく勤怠データを取得
         $times = Time::find($id);
-
+    
         if (!$times) {
             return redirect()->back()->with('error', '該当の勤怠データが見つかりません。');
         }
 
-        // 日付をリクエストパラメータから取得
-        $date = $request->input('date');
-        $showModal = $request->query('showModal', false);
 
-        if ($date) {
-            // ユーザーの特定の日付の勤怠データを取得
-            $times = Time::where('user_id', Auth::id())
-                        ->whereDate('punchIn', $date)
-                        ->first();
-
-            if ($times) {
-                // 日付で見つかったデータを JSON で返す（AJAX リクエスト用）
-                return response()->json(['status' => 'success', 'data' => $times]);
-            } else {
-                return response()->json(['status' => 'error', 'message' => '指定された日の勤怠データが見つかりません']);
-            }
-        }
-
-        $showModal = $request->query('showModal', false);
+        //$showModal = $request->query('showModal', false);
         // `$date`がない場合、通常のビューを返す
-        return view('detail', compact('times', 'showModal'));
+        return view('detail', compact('times'));
     }
 
-    
+    public function detailByDate($date)
+    {
+       // 日付とログイン中のユーザーに基づいて勤怠データを取得
+       $attendance = Time::where('user_id', Auth::id())
+                      ->whereDate('punchIn', $date)
+                      ->first();
+
+       // 勤怠データが存在しない場合の処理
+       if (!$attendance) {
+           return redirect()->route('times.calendar')->with('error', '指定された日の勤怠データが見つかりません');
+       }
+
+       // ビューにデータを渡して表示
+       return view('times.detail', compact('times'));
+    }
 
     public function edit($id)
     {
@@ -241,44 +240,34 @@ class TimesController extends Controller
 
     public function update(Request $request, $id)
     {
-        //バリデーション
+        // バリデーション
         $request->validate([
             'punchIn' => 'required|date',
             'punchOut' => 'nullable|date',
             'comments' => 'nullable|string|max:255',
             'method' => 'required|string',
-            'break_time' => 'nullable|integer|min:0',
+            'break_time' => 'nullable|integer|min:0', // 分単位でバリデーション
         ]);
-
-        //更新する打刻データを取得
+    
+        // 更新する打刻データを取得
         $time = Time::findOrFail($id);
-
-        // 休憩時間が指定されている場合、更新（分単位で処理）
-        if ($request->filled('break_time')) {
-        // `break_time` が数値（分）で送信されてきた場合
-        $breakMinutes = $request->input('break_time');
-        // 休憩時間を分単位で保存する (例: 60分なら "01:00:00" として保存)
-        $time->break_time = Carbon::createFromTime(0, $breakMinutes)->format('H:i:s');
-            } else {
-            // 休憩時間が入力されていない場合は null として保存
-            $time->break_time = null;
-        }
-
-        //データを更新
+    
+        // データを更新
         $time->update([
             'punchIn' => $request->input('punchIn'),
             'punchOut' => $request->input('punchOut'),
             'method' => $request->input('method'),
             'comments' => $request->input('comments'),
+            'break_time' => $request->input('break_time'), // 分単位でそのまま保存
         ]);
-
+    
         // リクエストからコメントを含む他のフィールドも更新
         $time->update($request->only(['punchIn', 'punchOut', 'comments']));
 
-        //更新後のリダイレクト
+        // 更新後のリダイレクト
         return redirect()->route('times.detail', $time->id)->with('success', '打刻データが更新されました');
     }
-        
+    
     public function monthlyReport(Request $request)
     {
         // 現在の年と月を取得

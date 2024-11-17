@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\MonthlyReport;
 use App\Models\Time; // 勤怠データのモデル
+use App\Models\ApprovalHistory;
 use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -81,6 +82,15 @@ class MonthlyReportController extends Controller
         $report->status = 'approved';
         $report->save();
 
+        // 承認履歴の保存
+        ApprovalHistory::create([
+            'application_id' => $id,
+            'application_type' => MonthlyReport::class,
+            'admin_id' => auth()->id(),
+            'action' => 'approved',
+            'comment' => '承認しました。',
+        ]);
+
         return redirect()->back()->with('success', '月報が承認されました');
     }
 
@@ -96,6 +106,15 @@ class MonthlyReportController extends Controller
         $monthlyReport->reject_comment = $request->input('reject_comment');
         $monthlyReport->rejected_by = auth()->user()->name;
         $monthlyReport->save();
+
+        // 承認履歴の保存
+        ApprovalHistory::create([
+            'application_id' => $id,
+            'application_type' => MonthlyReport::class,
+            'admin_id' => auth()->id(),
+            'action' => 'rejected',
+            'comment' => $request->input('reject_comment'),
+        ]);
 
         // 通知を作成
         Notification::create([

@@ -61,9 +61,11 @@
                             <strong>{{ Carbon\Carbon::parse($date)->format('Y年m月d日') }}（{{ $weekday }}）</strong>
                             <p>出勤: {{ $records->first()->punchIn ?? '打刻はありません' }}</p>
                             <p>退勤: {{ $records->sortByDesc('punchOut')->first()->punchOut ?? '打刻はありません' }}</p>
+                            @foreach ($records as $record)
                             <button class="btn btn-secondary btn-sm">
-                                <a href="{{ route('times.detail', ['id' => $records->first()->id, 'showModal' => 'true']) }}" style="color:white;">詳細</a>
+                                <a href="{{ route('times.detail', ['id' => $record->id]) }}" style="color:white; text-decoration: none;">詳細</a>
                             </button>
+                            @endforeach
                             <button class="btn btn-secondary btn-sm">
                                 <a href="{{ route('times.edit', $records->first()->id) }}" style="color:white;">編集</a>
                             </button>
@@ -95,10 +97,9 @@
             </div>
             </div>
 @endsection
-
-    @section('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
+@section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
     // 現在の日時を表示するための関数
     function updateTime() {
         const now = new Date();
@@ -125,11 +126,8 @@
 
     // 毎秒ごとに現在の時刻を更新する
     setInterval(updateTime, 1000);
+    updateTime(); // ページ読み込み時に最初の時刻を表示
 
-    // ページ読み込み時に最初の時刻を表示
-    updateTime();
-
-    // 出勤・退勤・休憩用のメッセージを表示するための関数
     function showMessage(message) {
         const popupMessage = $('#popup-message');
         popupMessage.removeClass('alert-success alert-danger');
@@ -214,21 +212,7 @@
                     showMessage('休憩終了に失敗しました。');
                 }
             });
-        });
+        })
     });
-
-    function markNotificationAsRead(notificationId) {
-    $.ajax({
-        url: `/notifications/check/${notificationId}`,
-        method: 'POST',  // 必ず POST メソッドを指定
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        success: function(response) {
-            alert(response.message);
-        },
-        error: function(xhr) {
-            alert('エラーが発生しました。');
-        }
-    });
-}
 </script>
 @endsection

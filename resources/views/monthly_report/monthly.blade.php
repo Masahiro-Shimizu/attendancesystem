@@ -40,15 +40,14 @@
                         <th>日付 (曜日)</th>
                         <th>出勤時間</th>
                         <th>退勤時間</th>
-                        <th>合計勤務時間</th>
-                        <th>休憩時間</th>
                         <th>実労働時間</th>
+                        <th>休憩時間</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($times as $time)
                         @php
-                        // 曜日を漢字で表す配列
+                            // 曜日を漢字で表す配列
                             $weekMap = ['日', '月', '火', '水', '木', '金', '土'];
                             $weekday = $weekMap[Carbon\Carbon::parse($time->punchIn)->dayOfWeek];
                         @endphp
@@ -58,22 +57,24 @@
                             <td>{{ $time->punchOut ? $time->punchOut->format('H:i') : '退勤なし' }}</td>
                             <td>
                                 @if($time->punchOut)
-                                    {{ $time->punchIn->diffInHours($time->punchOut) }}時間
+                                    @php
+                                        $totalMinutes = $time->punchIn->diffInMinutes($time->punchOut);
+                                        $workMinutes = $totalMinutes - ($time->break_time ?? 0);
+                                        $workHours = intdiv($workMinutes, 60);
+                                        $workRemainingMinutes = $workMinutes % 60;
+                                    @endphp
+                                    {{ sprintf('%02d:%02d', $workHours, $workRemainingMinutes) }}
                                 @else
                                     -
                                 @endif
                             </td>
-                            <!--<td>{{ $time->break_time ? $time->break_time . '分' : '1:00' }}</td>-->
                             <td>
                                 @if($time->punchOut)
-                                    
-                                    {{-- 休憩時間を分で表示 --}}
                                     {{ $time->break_time ? $time->break_time . '分' : '休憩なし' }}
                                 @else
                                     -
                                 @endif
                             </td>
-                            <td>{{ $time->actual_working_time ?? '未計算' }}</td> <!-- 実労働時間 --></td>
                         </tr>
                     @endforeach
                 </tbody>

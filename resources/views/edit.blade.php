@@ -43,8 +43,8 @@
                     </div>
 
                     <div class="form-group">
-                            <label for="breakTime">休憩時間 (分)</label>
-                            <input type="number" class="form-control" id="breakTime" name="break_time" value="{{ $time->break_time ? \Carbon\Carbon::parse($time->break_time)->format('H:i') : '' }}">
+                        <label for="breakTime">休憩時間 (分)</label>
+                        <input type="number" class="form-control" id="breakTime" name="break_time" value="{{ old('break_time', $time->break_time) }}">
                     </div>
 
                     <!-- コメント -->

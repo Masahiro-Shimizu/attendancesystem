@@ -36,14 +36,14 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins', // 管理者用のプロバイダー
+        ],
+
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
         ],
     ],
 

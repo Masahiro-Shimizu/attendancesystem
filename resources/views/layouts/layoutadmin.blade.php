@@ -42,6 +42,17 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('admin.home') }}">ホーム</a>
                         </li>
+
+                        <!-- ユーザー表示へのリンク -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.users') }}">ユーザー</a>
+                        </li>
+
+                        <!-- 履歴表示へのリンク -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.history', ['year' => now()->year, 'month' => now()->month]) }}">履歴</a>
+                        </li>
+
                     </ul>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">

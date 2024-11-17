@@ -15,5 +15,6 @@ class Time extends Model
     protected $casts = [
         'punchIn' => 'datetime',
         'punchOut' => 'datetime',
+        'break_time' => 'integer',
     ];
 }

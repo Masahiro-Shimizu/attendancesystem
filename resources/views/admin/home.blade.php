@@ -33,7 +33,7 @@
                                     有給休暇
                                 @elseif($application->type == 'vacation')
                                     休暇
-                                @elseif($application->type == 'absence')
+                                @elseif($application->type == 'absent')
                                     欠勤
                                 @endif
                             @endif
@@ -55,7 +55,9 @@
                             @endif
                         </td>
                         <td>
+                            <!-- 詳細ボタン -->
                             @if ($application instanceof \App\Models\MonthlyReport)
+                                <a href="{{ route('admin.monthly_report.show', $application->id) }}" class="btn btn-info btn-sm">詳細</a>
                                 <form action="{{ route('monthly_report.approve', $application->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     <button type="submit" class="btn btn-success btn-sm">承認</button>
@@ -89,6 +91,7 @@
                                     </div>
                                 </div>
                             @elseif ($application instanceof \App\Models\LeaveRequest)
+                                <a href="{{ route('admin.leave_requests.show', $application->id) }}" class="btn btn-info btn-sm">詳細</a>
                                 <form action="{{ route('admin.leave_requests.approve', $application->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     <button type="submit" class="btn btn-success btn-sm">承認</button>
