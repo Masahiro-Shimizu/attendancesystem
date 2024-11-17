@@ -7,7 +7,7 @@
 ### 一覧画面　（ホーム）
 https://github.com/user-attachments/assets/ea921286-b6bb-4a21-b465-8039682d5f6f
 
-###　一覧画面(出勤)
+### 一覧画面(出勤)
 https://github.com/user-attachments/assets/24f2ba0c-7cde-4585-b750-9ed3370f5c4a
 
 ### 一覧画面(休憩開始)
