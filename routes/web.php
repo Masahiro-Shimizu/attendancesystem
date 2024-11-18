@@ -30,6 +30,7 @@ Route::post('/admin/login', [App\Http\Controllers\AdminController::class, 'admin
 
 
 Route::middleware(['auth:admin', 'admin'])->group(function() {
+    //一覧画面
     Route::get('/admin/home', [App\Http\Controllers\AdminHomeController::class, 'index'])->name('admin.home');
     Route::get('/monthly_report/approval', [App\Http\Controllers\MonthlyReportController::class, 'index'])->name('monthly_report.approval');
     Route::post('/monthly_report/approve/{id}', [App\Http\Controllers\MonthlyReportController::class, 'approve'])->name('monthly_report.approve');
@@ -51,6 +52,7 @@ Route::middleware(['auth:admin', 'admin'])->group(function() {
     // 申請差し戻し
     Route::post('/admin/leave_requests/reject/{id}', [App\Http\Controllers\LeaveRequestController::class, 'reject'])->name('admin.leave_requests.reject');
 
+    //履歴
     Route::get('/admin/history/{year?}/{month?}', [App\Http\Controllers\AdminHomeController::class, 'history'])
     ->name('admin.history')
     ->where(['year' => '[0-9]+', 'month' => '[0-9]+'])
@@ -61,7 +63,7 @@ Route::middleware(['auth:admin', 'admin'])->group(function() {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // 認証が必要なルートをグループ化
 Route::middleware(['auth'])->group(function() {
@@ -79,9 +81,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/times/calendar', [App\Http\Controllers\TimesController::class, 'showCalendar'])->name('times.calendar');
     Route::get('/times/get-id-by-date', [App\Http\Controllers\TimesController::class, 'getIdByDate'])->name('times.getIdByDate');
     Route::get('/times/detail/{id}', [App\Http\Controllers\TimesController::class, 'detail'])->name('times.detail');
-    // カレンダーから日付を選択して勤怠詳細を表示する場合のルート（日付で取得）
-    //Route::get('/times/detail-by-date/{date}', [App\Http\Controllers\TimesController::class, 'detailByDate'])->name('times.detailByDate');
-    
+
     //編集画面
     Route::get('/times/edit/{id}',[App\Http\Controllers\TimesController::class, 'edit'])->name('times.edit');
     Route::put('/times/{id}',[App\Http\Controllers\TimesController::class, 'update'])->name('times.update');

@@ -33,14 +33,14 @@ class MonthlyReportController extends Controller
         ]);
 
         // フル日付に変換 (月の最初の日を作成)
-        $month = $request->input('month') . '-01'; // YYYY-MM-01 の形式に変換
+        $month = $request->input('month') . '-01'; 
 
 
         // 月報データを保存する処理
         MonthlyReport::create([
             'user_id' => auth()->id(),
-            'month' => $month,  // 修正後の月
-            'status' => 'pending',  // 申請時は保留状態
+            'month' => $month,
+            'status' => 'pending',
         ]);
 
         // ログインユーザーの同じ月の最新の申請を取得
@@ -50,13 +50,11 @@ class MonthlyReportController extends Controller
             ->first();
 
         if ($existingApplication && $existingApplication->status == 'rejected') {
-            // 差し戻しのコメントと情報をリセット
             $existingApplication->reject_comment = null;
-            $existingApplication->rejected_by = null;  // 管理者名のフィールドもリセット
+            $existingApplication->rejected_by = null;
             $existingApplication->status = 'pending';
             $existingApplication->save();
         } else {
-            // 新規作成
             MonthlyReport::create([
                 'user_id' => auth()->id(),
                 'month' => $month,
@@ -65,7 +63,6 @@ class MonthlyReportController extends Controller
         }    
 
         return response()->json(['message' => '月報を申請しました。']);
-        //redirect()->route('monthly_report.create')->with('success', '月報を申請しました');
     }
 
     // 月報一覧（承認・却下用）
@@ -119,7 +116,7 @@ class MonthlyReportController extends Controller
         // 通知を作成
         Notification::create([
             'user_id' => $monthlyReport->user_id,
-            'type' => 'monthly_report_rejected', // 適切なタイプを指定
+            'type' => 'monthly_report_rejected',
             'message' => "月報申請が却下されました。理由: " . $request->input('reject_comment'),
             'is_checked' => false,
         ]);

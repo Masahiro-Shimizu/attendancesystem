@@ -19,7 +19,7 @@ class TimesController extends Controller
 
         $items = Time::where('user_id', Auth::id())
             ->orderBy('punchIn', 'desc')
-            ->get()  // クエリビルダーではなくコレクションを返す
+            ->get()
             ->groupBy(function($date) {
                 return Carbon::parse($date->punchIn)->format('Y-m-d');
             })
@@ -56,14 +56,6 @@ class TimesController extends Controller
     } catch (\Exception $e) {
         \Log::error('Failed to create Time Entry:', ['error' => $e->getMessage()]);
     }
-
-        //$currentTime = Carbon::now('Asia/Tokyo');
-        //\Log::info('PunchIn Time:', ['time' => $currentTime]);
-
-        //Time::create([
-            //'user_id' => Auth::id(),
-            //'punchIn' => Carbon::now('Asia/Tokyo'),
-        //]);
 
         return response()->json(['message' => '出勤しました']);
     }
@@ -110,9 +102,7 @@ class TimesController extends Controller
         if ($times) {
             // 現在時刻をログに出力
             Log::info('現在時刻（休憩開始前）: ', ['now' => Carbon::now()]);
-            // 休憩開始時間を一時的に保存
-            //$times->update(['break_start' => Carbon::now()]);
-            //$times->save();
+
             // 休憩開始時間を一時的に保存
             $times->break_start = Carbon::now();
 
@@ -121,7 +111,6 @@ class TimesController extends Controller
 
             $times->save();
 
-            //Log::info('休憩開始時刻を記録: ', ['break_start' => $times->break_start]);
             // 保存後のデータをログに出力
             Log::info('保存後の勤怠データ: ', ['times' => $times]);
             return response()->json(['message' => '休憩を開始しました']);
@@ -201,8 +190,6 @@ class TimesController extends Controller
             return redirect()->back()->with('error', '該当の勤怠データが見つかりません。');
         }
 
-
-        //$showModal = $request->query('showModal', false);
         // `$date`がない場合、通常のビューを返す
         return view('detail', compact('times'));
     }
@@ -246,7 +233,7 @@ class TimesController extends Controller
             'punchOut' => 'nullable|date',
             'comments' => 'nullable|string|max:255',
             'method' => 'required|string',
-            'break_time' => 'nullable|integer|min:0', // 分単位でバリデーション
+            'break_time' => 'nullable|integer|min:0', 
         ]);
     
         // 更新する打刻データを取得
@@ -258,7 +245,7 @@ class TimesController extends Controller
             'punchOut' => $request->input('punchOut'),
             'method' => $request->input('method'),
             'comments' => $request->input('comments'),
-            'break_time' => $request->input('break_time'), // 分単位でそのまま保存
+            'break_time' => $request->input('break_time'), 
         ]);
     
         // リクエストからコメントを含む他のフィールドも更新
@@ -271,21 +258,21 @@ class TimesController extends Controller
     public function monthlyReport(Request $request)
     {
         // 現在の年と月を取得
-    $year = $request->input('year', Carbon::now()->year);
-    $month = $request->input('month', Carbon::now()->month);
+        $year = $request->input('year', Carbon::now()->year);
+        $month = $request->input('month', Carbon::now()->month);
 
-    // 該当する月のデータを取得
-    $times = Time::whereYear('punchIn', $year)
+        // 該当する月のデータを取得
+        $times = Time::whereYear('punchIn', $year)
                 ->whereMonth('punchIn', $month)
                 ->get();
 
-    // 各日の合計勤務時間と実労働時間を計算
-    foreach ($times as $time) {
-        $punchIn = Carbon::parse($time->punchIn);
-        $punchOut = $time->punchOut ? Carbon::parse($time->punchOut) : null;
+        // 各日の合計勤務時間と実労働時間を計算
+        foreach ($times as $time) {
+            $punchIn = Carbon::parse($time->punchIn);
+            $punchOut = $time->punchOut ? Carbon::parse($time->punchOut) : null;
         
-        // 勤務時間の初期化
-        $totalWorkingTime = 0;
+            // 勤務時間の初期化
+            $totalWorkingTime = 0;
 
         if ($punchOut) {
             // 出勤時間と退勤時間の差（分）を計算して勤務時間に変換
@@ -298,12 +285,11 @@ class TimesController extends Controller
             }
         }
 
-        // 実労働時間を新しいフィールドに格納（例: 実労働時間を分または時間に変換して表示）
-        $time->actual_working_time = number_format($totalWorkingTime, 1) . '時間';
-    }
+            // 実労働時間を新しいフィールドに格納（例: 実労働時間を分または時間に変換して表示）
+            $time->actual_working_time = number_format($totalWorkingTime, 1) . '時間';
+        }
 
-       // ビューにデータを渡す
-       return view('monthly_report.monthly', compact('year', 'month', 'times'));
+        // ビューにデータを渡す
+        return view('monthly_report.monthly', compact('year', 'month', 'times'));
     }
-
 }

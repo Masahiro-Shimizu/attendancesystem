@@ -12,9 +12,7 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-    @vite(['resources/js/app.js', 'resources/sass/app.scss'])
 
-    <!--<link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">-->
     <!-- jQuery, Moment.js, FullCalendarの読み込み -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -22,7 +20,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 
     <!-- Scripts -->
-    <!--<script src="{{ asset('js/app.js') }}" defer></script>-->
     @vite(['resources/js/app.js', 'resources/sass/app.scss'])
 
 </head>
@@ -42,7 +39,7 @@
                     <ul class="navbar-nav me-auto">
                         <!-- ホームへのリンク -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('home') }}">ホーム</a>
+                            <a class="nav-link" href="{{ route('times.index') }}">ホーム</a>
                         </li>
                     @if (Auth::check()) <!-- ログインしているか確認 -->    
                         <!-- 勤怠詳細へのリンク -->

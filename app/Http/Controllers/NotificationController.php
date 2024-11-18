@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Notification; // Notificationモデルをインポート
-
+use App\Models\Notification;
 
 class NotificationController extends Controller
 {
