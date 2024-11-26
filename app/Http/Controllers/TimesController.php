@@ -13,43 +13,49 @@ use Illuminate\Support\Facades\Log;
 
 class TimesController extends Controller
 {
+    //userとしてログインした際に動作するメソッド
     public function index()
     {
-        $today = Carbon::today()->startOfDay();
+        //$today = Carbon::today()->startOfDay(); //←このコードは冗長
 
-        $items = Time::where('user_id', Auth::id())
-            ->orderBy('punchIn', 'desc')
-            ->get()
-            ->groupBy(function($date) {
-                return Carbon::parse($date->punchIn)->format('Y-m-d');
+        $items = Time::where('user_id', Auth::id()) //「items」という変数の中に「Time」モデルから'user_id'が'Auth_id'と一致するレコードをフィルタリング
+            ->orderBy('punchIn', 'desc') //'punchIn'を取得して降順に並び替える
+            ->get() //書き込みを実行し、並び替えたものを取得
+            ->groupBy(function($date) { //取得した勤怠データを、'punchIn'の日付(Y-m-d形式)ごとにグループ化
+                return Carbon::parse($date->punchIn)->format('Y-m-d'); //Carbon::parse()は日付の操作やフォーマットへの変更を可能にする　Carbonオブジェクト
             })
-            ->take(3);
-
+            ->take(3); //3日分を取得
+        
+        //MonthlyReportモデルから、ステータスが'reject（拒否）'のデータを取得する（差し戻しになったデータ）
         $rejectedMonthlyReports = MonthlyReport::where('user_id', auth()->id())
                                  ->where('status', 'rejected')
                                  ->get();
 
+        //LearveRequestモデルから、ステータスが'reject（拒否）'のデータを取得する（差し戻しになったデータ）
         $rejectedLeaveRequests = LeaveRequest::where('user_id', auth()->id())
                                ->where('status', 'rejected')
                                ->get();
 
+        //Notificationモデルから、未確認のステータスになっているデータを取得する
         $notifications = Notification::where('user_id', auth()->id())
                        ->where('is_checked', false)
                        ->orderBy('created_at', 'desc')
                        ->get();
 
-        return view('home', compact('items', 'rejectedMonthlyReports', 'rejectedLeaveRequests', 'notifications'));
+        //compactでまとめた4つの変数を配列としてまとめ、'home'のviewにデータを送っている
+        return view('home', compact('items', 'rejectedMonthlyReports', 'rejectedLeaveRequests', 'notifications')); //compact()は指定した変数名をキー、変数の値を値として連想配列を作成するための関数です。
     }
 
+    //「出勤」ボタンを押下した際に動作するメソッド
     public function punchIn()
     {
-        $currentTime = Carbon::now('Asia/Tokyo');
-    \Log::info('PunchIn Time:', ['time' => $currentTime]);
+        $currentTime = Carbon::now('Asia/Tokyo'); //現在の日時を「東京」の時間で取得
+    \Log::info('PunchIn Time:', ['time' => $currentTime]);//取得した現在時刻をログに出力する
 
     try {
-        $timeEntry = Time::create([
-            'user_id' => Auth::id(),
-            'punchIn' => $currentTime,
+        $timeEntry = Time::create([ //Timeモデルを使用してデータベースに新しい勤怠を挿入する
+            'user_id' => Auth::id(), //現在ログイン中のユーザーのidに（Auth::id()）を設定
+            'punchIn' => $currentTime, //punchInに$currentTimeの値を設定する　$currentTimeはCarbon::now() によって生成された日時情報を持つオブジェクト
         ]);
 
         \Log::info('Time Entry Created:', ['entry' => $timeEntry->toArray()]);

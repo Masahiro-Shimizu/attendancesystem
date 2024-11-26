@@ -63,7 +63,7 @@ Route::middleware(['auth:admin', 'admin'])->group(function() {
 
 Auth::routes();
 
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // 認証が必要なルートをグループ化
 Route::middleware(['auth'])->group(function() {
