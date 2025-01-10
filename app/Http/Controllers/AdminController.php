@@ -11,13 +11,29 @@ use App\Models\User;
 
 class AdminController extends Controller
 {
-    // 管理者用のログインフォームを表示
+    /**
+     * 管理者ログインフォームを表示します。
+     *
+     * @return \Illuminate\View\View
+     *     管理者ログインページのビューを返します。
+     */
     public function showAdminLoginForm()
     {
         return view('admin.login'); // 管理者用のログインビューを作成する
     }
 
-    // 管理者用のログイン処理
+    /**
+     * 管理者ログイン処理を行います。
+     *
+     * @param \Illuminate\Http\Request $request
+     *     HTTPリクエストオブジェクト。ログイン情報が含まれます。
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     *     ログイン成功時に管理者ホームページへリダイレクトし、失敗時にはエラーメッセージを返します。
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     *     バリデーションに失敗した場合に例外が発生します。
+     */
     public function adminLogin(Request $request)
     {
         $this->validate($request, [
@@ -33,7 +49,12 @@ class AdminController extends Controller
         return back()->withInput($request->only('email'))->withErrors(['email' => 'Invalid credentials']);
     }
 
-    // 管理者用のホームページを表示
+   /**
+     * 管理者用ホームページを表示し、全ての月次報告データを渡します。
+     *
+     * @return \Illuminate\View\View
+     *     管理者ホームページビューを表示します。
+     */
     public function home()
     {
         // 月次報告データを取得
@@ -43,7 +64,12 @@ class AdminController extends Controller
         return view('admin.home', compact('reports'));
     }
 
-    // ユーザー一覧を表示するメソッド
+   /**
+     * ユーザー一覧を取得し、管理者ページで表示します。
+     *
+     * @return \Illuminate\View\View
+     *     ユーザー一覧ビューを返します。
+     */
     public function index()
     {
         // 全てのユーザーを取得
@@ -53,7 +79,18 @@ class AdminController extends Controller
         return view('admin.users', compact('users'));
     }
 
-
+    /**
+     * ユーザーを管理者に昇格します。
+     *
+     * @param int $id
+     *     昇格対象のユーザーID。
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     *     ユーザー一覧ページにリダイレクトし、成功メッセージを表示します。
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     *     指定されたIDのユーザーが存在しない場合に例外が発生します。
+     */
     public function promote($id)
     {
         $user = User::findOrFail($id);
@@ -65,6 +102,18 @@ class AdminController extends Controller
         return redirect()->route('admin.users')->with('success', "{$user->name}を管理者に昇格させました。");
     }
 
+   /**
+     * ユーザーを管理者に昇格し、adminsテーブルに記録します。
+     *
+     * @param int $id
+     *     昇格対象のユーザーID。
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     *     ユーザー一覧ページにリダイレクトし、成功メッセージを表示します。
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     *     指定されたIDのユーザーが存在しない場合に例外が発生します。
+     */
     public function promoteToAdmin($id)
     {
         $user = User::findOrFail($id);

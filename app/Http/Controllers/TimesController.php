@@ -11,8 +11,21 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * TimesController
+ *
+ * 勤怠管理の出退勤・休憩機能、勤怠データの表示・編集、月次報告を提供するコントローラ。
+ *
+ * @package App\Http\Controllers
+ */
 class TimesController extends Controller
 {
+    /**
+     * ユーザーのホーム画面に表示する勤怠データを取得します。
+     *
+     * @return \Illuminate\View\View
+     *     最新の勤怠データ、差し戻された月報・休暇申請、通知データをビューに渡します。
+     */
     //userとしてログインした際に動作するメソッド
     public function index()
     {
@@ -46,6 +59,12 @@ class TimesController extends Controller
         return view('home', compact('items', 'rejectedMonthlyReports', 'rejectedLeaveRequests', 'notifications')); //compact()は指定した変数名をキー、変数の値を値として連想配列を作成するための関数です。
     }
 
+    /**
+     * 出勤ボタン押下時の処理を実行します。
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *     出勤時刻を記録し、成功メッセージを返します。
+     */
     //「出勤」ボタンを押下した際に動作するメソッド
     public function punchIn()
     {
@@ -66,35 +85,47 @@ class TimesController extends Controller
         return response()->json(['message' => '出勤しました']);
     }
 
+    /**
+     * 退勤ボタン押下時の処理を実行します。
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *     退勤時刻を記録し、成功メッセージを返します。
+     */
     public function punchOut()
     {
         \Log::info('PunchOut method called for user:', ['user_id' => Auth::id()]);
 
-        $attendance = Time::where('user_id', Auth::id())
-                            ->whereNull('punchOut')
-                            ->orderBy('punchIn', 'desc')
+        $attendance = Time::where('user_id', Auth::id()) //「attendance」という変数の中に「Time」モデルから'user_id'が'Auth_id'と一致するレコードをフィルタリング
+                            ->whereNull('punchOut') //「punchOut」がNULL(記録にない＝現在出勤中)のレコードを取得
+                            ->orderBy('punchIn', 'desc') //「punchIn」退勤が「first」最新のものを取得
                             ->first();
 
-                            if ($attendance) {
+                            if ($attendance) { //出勤中のレコードが見つかった場合に処理を続行
                                 $currentTime = Carbon::now('Asia/Tokyo');
                                 \Log::info('Updating PunchOut time for user:', ['user_id' => Auth::id(), 'time' => $currentTime]);
                         
                                 try {
-                                    $attendance->update([
+                                    $attendance->update([ //attendanceのpunchoutカラムに現在時刻（$currentTime）を記録
                                         'punchOut' => $currentTime,
                                     ]);
                         
-                                    \Log::info('Updated Attendance Record:', ['attendance' => $attendance->toArray()]);
+                                    \Log::info('Updated Attendance Record:', ['attendance' => $attendance->toArray()]); //データベースのレコードを更新する
                                 } catch (\Exception $e) {
                                     \Log::error('Failed to update PunchOut:', ['error' => $e->getMessage()]);
                                 }
         
-                            return response()->json(['message' => '退勤しました']);
+                            return response()->json(['message' => '退勤しました']); //退勤しましたをjsonレスポンスで返す
         }
-
+    
         return response()->json(['message' => '退勤処理に失敗しました'], 400);
     }
 
+    /**
+     * 休憩開始を記録します。
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *     休憩開始時刻を記録し、成功メッセージを返します。
+     */
     // 休憩開始
     public function breakStart()
     {
@@ -126,6 +157,12 @@ class TimesController extends Controller
         return response()->json(['message' => '休憩開始処理に失敗しました'], 400);
     }
 
+    /**
+     * 休憩終了を記録します。
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *     休憩時間を加算し、成功メッセージを返します。
+     */
     // 休憩終了
     public function breakEnd()
     {
@@ -173,27 +210,32 @@ class TimesController extends Controller
 
     public function getIdByDate(Request $request)
     {
-        $date = $request->input('date');
-        $times = Time::where('user_id', Auth::id())
-                      ->whereDate('punchIn', $date)
-                      ->first();
+        //日付の取得
+        $date = $request->input('date');//リクエストから日付を取得する
+        $times = Time::where('user_id', Auth::id())//現在ログイン中のユーザーの勤怠データのみを取得
+                      ->whereDate('punchIn', $date)//whereDate()は日付データの「日付部分」のみを比較します　勤怠データのpunchIn指定された日付（$date）と一致するレコードを取得
+                      ->first();//条件に一致する最初のレコードを取得
 
-        if ($times) {
-            return response()->json(['status' => 'success', 'data' => ['id' => $times->id]]);
+        //勤怠データが取得できた場合
+        if ($times) {//
+            return response()->json(['status' => 'success', 'data' => ['id' => $times->id]]);//勤怠データidを含む成功応答をJSON形式で返す
         }
 
+        //勤怠データが受け取れなかった場合
         return response()->json(['status' => 'error', 'message' => '指定された日の勤怠データが見つかりません']);
     }
 
     public function detail($id, Request $request)
     {
+        //メソッドが呼び出されたことを記録するログ（勤怠データのIDを取得）
         \Log::info('detail method called with id:', ['id' => $id]);
 
         // `$id` に基づく勤怠データを取得
         $times = Time::find($id);
     
+        //該当するデータが見つからない場合の処理
         if (!$times) {
-            return redirect()->back()->with('error', '該当の勤怠データが見つかりません。');
+            return redirect()->back()->with('error', '該当の勤怠データが見つかりません。');//redirect()->back()で前のページにリダイレクトする
         }
 
         // `$date`がない場合、通常のビューを返す
@@ -231,6 +273,13 @@ class TimesController extends Controller
         return view('edit',compact('time'));
     }
 
+    /**
+     * 勤怠データを編集・更新します。
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id)
     {
         // バリデーション
