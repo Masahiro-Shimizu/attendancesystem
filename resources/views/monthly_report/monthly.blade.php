@@ -10,6 +10,8 @@
 
             <h2>月報: {{ $year }}年{{ $month }}月</h2>
 
+
+            <!-- 年月選択フォーム -->
             <form method="GET" action="{{ route('times.monthly') }}" class="form-inline">
 
                 <div class="form-group mb-2">
@@ -34,6 +36,7 @@
 
             </form>
 
+            <!-- 勤怠データテーブル -->
             <table class="table table-bordered">
                 <thead>
                     <tr>

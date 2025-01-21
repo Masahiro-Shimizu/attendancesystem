@@ -124,6 +124,8 @@
             headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
         });
     </script>
+
+    @include('layouts.footer')
 </body>
 </html>
 

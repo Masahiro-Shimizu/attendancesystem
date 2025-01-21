@@ -9,7 +9,11 @@
 
 @section('scripts')
 <script>
+    /**
+     * カレンダーの初期化と設定
+     */
     $(document).ready(function() {
+            // 日本語ロケール設定
         moment.updateLocale('ja', {
             months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
             monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
@@ -45,7 +49,7 @@
             }
         });
 
-
+        // FullCalendarの初期化
         $('#calendar').fullCalendar({
             locale: 'ja',  // 日本語化
             header: {
@@ -60,6 +64,10 @@
                 day: '日'
             },
             selectable: true,
+            /**
+             * 日付選択時の動作
+             * @param {object} start - 選択された開始日
+             */
             select: function(start) {
                 const selectedDate = start.format('YYYY-MM-DD');
                 $.ajax({
