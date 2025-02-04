@@ -87,7 +87,7 @@ Route::middleware(['auth:admin', 'admin'])->group(function() {
     Route::get('/admin/history/{year?}/{month?}', [AdminHomeController::class, 'history'])
         ->name('admin.history')
         ->where(['year' => '[0-9]+', 'month' => '[0-9]+'])
-        ->defaults('year', now()->year)
+        //->defaults('year', now()->year)
         ->defaults('month', now()->format('m'));
 });
 

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\MonthlyReport;
 use App\Models\User;
+use App\Http\Requests\AdminLoginRequest;
 
 
 class AdminController extends Controller
@@ -34,16 +35,24 @@ class AdminController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      *     バリデーションに失敗した場合に例外が発生します。
      */
-    public function adminLogin(Request $request)
+    public function adminLogin(AdminLoginRequest $request)
     {
-        $this->validate($request, [
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        // バリデーションエラーがある場合、ここでリダイレクトされる
+        $validated = $request->validated();
+
+        //バリデーションを剥がしたためコメントアウト
+        //$this->validate($request, [
+            //'email' => 'required|email',
+            //'password' => 'required',
+        //]);
 
         // 管理者専用のガードを使ってログイン
-        if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->intended('/admin/home'); // ログイン成功時に管理者専用ページにリダイレクト
+        //if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            //return redirect()->intended('/admin/home'); // ログイン成功時に管理者専用ページにリダイレクト
+        //}
+
+        if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
+            return redirect()->intended('/admin/home');
         }
 
         return back()->withInput($request->only('email'))->withErrors(['email' => 'Invalid credentials']);
