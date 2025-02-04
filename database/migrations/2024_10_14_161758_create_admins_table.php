@@ -4,11 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * CreateAdminsTable Migration
+ *
+ * 管理者情報を管理する admins テーブルを作成します。
+ * このテーブルは、アプリケーションの管理者アカウントを管理するために使用されます。
+ *
+ * @package Database\Migrations
+ */
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * マイグレーションを実行して admins テーブルを作成します。
      *
+     * テーブルが既に存在する場合は作成をスキップします。
      * @return void
      */
     public function up()
@@ -27,7 +36,7 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * マイグレーションをロールバックして admins テーブルを削除します。
      *
      * @return void
      */

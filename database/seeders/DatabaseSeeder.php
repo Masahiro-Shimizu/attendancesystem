@@ -5,10 +5,18 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+/**
+ * DatabaseSeeder
+ *
+ * データベースを初期化するためのシーダークラス。
+ * デフォルトのユーザーや管理者を作成し、必要に応じて他のシーダーを実行します。
+ *
+ * @package Database\Seeders
+ */
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * データベースを初期化して、必要なデフォルトデータやテストデータを挿入します。
      *
      * @return void
      */
@@ -19,10 +27,10 @@ class DatabaseSeeder extends Seeder
 
         // 管理者を1人作成
         \App\Models\User::factory()->state([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
+            'name' => 'Admin User', // 管理者の名前
+            'email' => 'admin@example.com', // 管理者のメールアドレス
             'password' => bcrypt('adminpassword'), // 管理者のパスワード
-            'role' => 'admin',
+            'role' => 'admin', // 管理者の役割
         ])->create();        
 
 

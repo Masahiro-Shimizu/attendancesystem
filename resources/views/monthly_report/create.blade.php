@@ -5,6 +5,7 @@
     <h2>月報の申請</h2>
     <div id="popup-message" style="display: none;" class="alert"></div>
 
+    <!-- 月報申請フォーム -->
     <form id="monthly-report-form" method="POST" action="{{ route('monthly_report.store') }}">
         @csrf
 
@@ -42,7 +43,7 @@
 
         // フォーム送信処理
         $('#monthly-report-form').on('submit', function(event) {
-            event.preventDefault();
+            event.preventDefault();  // デフォルト送信を無効化
             $.ajax({
                 url: '{{ route("monthly_report.store") }}',
                 method: 'POST',

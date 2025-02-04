@@ -4,10 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * AddMethodAndCommentsToTimesTable Migration
+ *
+ * times テーブルに打刻方法 (method) とコメント (comments) カラムを追加します。
+ *
+ * @package Database\Migrations
+ */
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * マイグレーションを実行して times テーブルに新しいカラムを追加します。
      *
      * @return void
      */
@@ -20,7 +27,7 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * マイグレーションをロールバックして times テーブルから追加したカラムを削除します。
      *
      * @return void
      */
@@ -28,7 +35,10 @@ return new class extends Migration
     {
         Schema::table('times', function (Blueprint $table) {
             if (Schema::hasColumn('times', 'comments')) {
-                $table->dropColumn('comments');
+                $table->dropColumn('comments');// コメントカラムの削除
+            }
+            if (Schema::hasColumn('times', 'method')) {
+                $table->dropColumn('method');         // 打刻方法カラムの削除
             }
             // 他のカラムを削除するロジックがあればそれも記述します。
         });
