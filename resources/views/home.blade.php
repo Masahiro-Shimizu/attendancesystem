@@ -14,7 +14,7 @@
                         <dd class="col-sm-9">{{ Auth::user()->id }}</dd>
                     </dl>
                     <div id="popup-message" style="display: none;" class="alert"></div>
-                    <!-- 日時表示エリア -->
+                    <!-- 日時表示エリア　2/4修正 -->
                     <div class="datetime-container">
                         <h4>現在の日時</h4>
                         <p id="current-date"></p>

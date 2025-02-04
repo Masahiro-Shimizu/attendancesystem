@@ -8,7 +8,7 @@
 https://github.com/user-attachments/assets/24d158d2-34ed-48fa-8023-2299a162a4fd
 
 ### 一覧画面　（ホーム）
-https://github.com/user-attachments/assets/ea921286-b6bb-4a21-b465-8039682d5f6f
+https://github.com/user-attachments/assets/9f6d4b17-2d4f-4560-a19d-88457d3c61b8
 
 ### 一覧画面(出勤)
 https://github.com/user-attachments/assets/24f2ba0c-7cde-4585-b750-9ed3370f5c4a
