@@ -25,10 +25,10 @@ class TestAttendanceSeeder extends Seeder
      */
     private function getHolidays()
     {
-        // 2024年の祝日（例として一部を設定）
+        // 2025年の祝日（例として一部を設定）
         return [
-            '2024-10-14', // 振替休日
-            //'2024-09-23', // 秋分の日
+            '2025-01-01', // 元旦
+            '2025-01-13', // 振替休日
         ];
     }
 
@@ -39,8 +39,8 @@ class TestAttendanceSeeder extends Seeder
      */
     public function run()
     {
-        $startDate = Carbon::create(2024, 10, 1); // 生成の開始日
-        $endDate = Carbon::create(2024, 10, 31); // 生成の終了日
+        $startDate = Carbon::create(2025, 01, 1); // 生成の開始日
+        $endDate = Carbon::create(2025, 01, 31); // 生成の終了日
 
         $holidays = $this->getHolidays(); // 祝日リストを取得
 
@@ -56,7 +56,7 @@ class TestAttendanceSeeder extends Seeder
                 'user_id'   => 1, // テストデータ用にユーザーID 1を指定（適宜変更）
                 'punchIn'   => $date->copy()->setTime(10, 0, 0), // 出勤時間を10:00に設定
                 'punchOut'  => $date->copy()->setTime(19, 0, 0), // 退勤時間を19:00に設定
-                'break_time' => '01:00:00', // 休憩時間を1時間に設定
+                'break_time' => 60, // 休憩時間を1時間に設定
                 'comments'   => 'テストコメント', // 任意のコメント
             ]);
         }
