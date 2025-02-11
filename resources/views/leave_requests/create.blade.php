@@ -11,8 +11,9 @@
         <!-- 申請の種類 -->
         <div class="form-group">
             <label for="type">申請の種類</label>
-            <select name="type" id="type" class="form-control">
-                <option value="vacation">休暇</option>
+            <select name="type" id="type" class="form-control @error('type') is-invalid @enderror">
+                <option value="">選択してください</option>
+                <option value="vacation" {{ old('type') == 'vacation' ? 'selected' : '' }}>休暇</option>
                 <option value="paid_leave">有給休暇</option>
                 <option value="absent">欠勤</option>
             </select>
@@ -26,8 +27,8 @@
 
         <!-- 終了日 -->
         <div class="form-group">
-            <label for="end_date">終了日 (任意)</label>
-            <input type="date" name="end_date" class="form-control">
+            <label for="end_date">終了日</label>
+            <input type="date" name="end_date" class="form-control" required>
         </div>
 
         <!-- 理由 -->

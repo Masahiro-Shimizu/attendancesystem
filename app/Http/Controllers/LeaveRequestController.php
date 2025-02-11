@@ -8,6 +8,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ApprovalHistory;
+use App\Http\Requests\LeaveRequestRequest;
 
 
 class LeaveRequestController extends Controller
@@ -36,15 +37,8 @@ class LeaveRequestController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      *     バリデーションに失敗した場合に例外が発生します。
      */
-    public function store(Request $request)
+    public function store(LeaveRequestRequest $request)
     {
-        $request->validate([
-            'type' => 'required|in:vacation,paid_leave,absent',//typeは必須、休暇、有給、欠勤のいずれかにする
-            'start_date' => 'required|date',//start_dateは必須、日付を入力
-            'end_date' => 'nullable|date|after_or_equal:start_date',//end_dateは日付を入力、start_date以降
-            'reason' => 'nullable|string',//理由は任意、文字列で入力
-        ]);
-
         //Leave_requestモデルを使用して新しい申請を保存。
         LeaveRequest::create([
             'user_id' => Auth::id(),
