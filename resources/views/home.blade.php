@@ -24,19 +24,19 @@
                     <div class="button-group">
                         <form id="punchin-form" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-primary">出勤</button>
+                            <button type="submit" class="btn btn-success">出勤</button>
                         </form>
                         <form id="punchout-form" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-success">退勤</button>
+                            <button type="submit" class="btn btn-danger">退勤</button>
                         </form>
                         <form id="breakstart-form" method="POST" action="{{ route('break-start') }}">
                             @csrf
-                            <button type="submit" class="btn btn-info">休憩開始</button>
+                            <button type="submit" class="btn btn-custom-blue">休憩開始</button>
                         </form>
                         <form id="breakend-form" method="POST" action="{{ route('break-end') }}">
                             @csrf
-                            <button type="submit" class="btn btn-secondary">休憩終了</button>
+                            <button type="submit" class="btn btn-custom-orange text-white">休憩終了</button>
                         </form>
                     </div>
 

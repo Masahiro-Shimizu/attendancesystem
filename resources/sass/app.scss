@@ -15,3 +15,28 @@
     margin-bottom: 20px;
 }
 
+.btn-custom-orange {
+    background-color: #fd7e14; /* ジャイアンみたいな色 */
+    color: white;
+}
+.btn-custom-orange:hover {
+    background-color: #cc8400; /* ホバー時にさらに暗く */
+}
+
+.btn-custom-purple {
+    background-color: #6a0dad; /* 濃い紫 */
+    color: white;
+    border: none;
+}
+.btn-custom-purple:hover {
+    background-color: #5a009d; /* ホバー時に暗め */
+}
+
+.btn-custom-blue {
+    background-color: #0b5ed7; /* $blue-600 の色 */
+    color: white;
+}
+.btn-custom-blue:hover {
+    background-color: #0a58ca; /* ホバー時に少し暗く */
+}
+
