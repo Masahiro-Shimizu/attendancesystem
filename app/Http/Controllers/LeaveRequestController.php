@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ApprovalHistory;
 use App\Http\Requests\LeaveRequestRequest;
+use Illuminate\Support\Facades\Log;
 
 
 class LeaveRequestController extends Controller
@@ -39,14 +40,28 @@ class LeaveRequestController extends Controller
      */
     public function store(LeaveRequestRequest $request)
     {
+        // フォームから送信されたデータをログに出力
+        Log::info('休暇申請フォームが送信されました。', [
+            'user_id' => Auth::id(),
+            'type' => $request->type,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'reason' => $request->reason,
+        ]);
+
         //Leave_requestモデルを使用して新しい申請を保存。
-        LeaveRequest::create([
+        $leaveRequest = LeaveRequest::create([
             'user_id' => Auth::id(),
             'type' => $request->type,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'reason' => $request->reason,
             'status' => 'pending',
+        ]);
+
+        // 保存が成功した場合のログ
+        Log::info('休暇申請がデータベースに保存されました。', [
+            'leave_request_id' => $leaveRequest->id,
         ]);
 
         //申請一覧ページにリダイレクトする
@@ -116,37 +131,66 @@ class LeaveRequestController extends Controller
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      *     指定されたIDの休暇申請が存在しない場合に例外が発生します。
      */
-    public function reject(Request $request, $id)
+    public function reject(LeaveRequestRequest $request, $id)
     {
-        $request->validate([
-            'reject_comment' => 'nullable|string|max:500',
+        // 却下処理の開始ログ
+        Log::info('休暇申請が却下されました。', [
+            'leave_request_id' => $id,
+            'admin_id' => Auth::id(),
+            'reject_comment' => $request->reject_comment,
         ]);
 
         //指定されたIDの休暇申請を取得、存在しない場合は404エラーを返す
         $leaveRequest = LeaveRequest::findOrFail($id);
 
         //ステータスを却下に更新
-        $leaveRequest->status = 'rejected';
-        $leaveRequest->reject_comment = $request->input('reject_comment');
-        $leaveRequest->rejected_by = auth()->user()->name;
-        $leaveRequest->save();
+        $leaveRequest->update([
+            'status' => 'rejected',
+            'reject_comment' => $request->input('reject_comment'),
+            'rejected_by' => auth()->user()->name,
+        ]);
 
         // 申請タイプに応じたラベルを作成
         $leaveType = '';
-        if ($leaveRequest->type == 'paid_leave') {
-            $leaveType = '有給休暇';
-            } elseif ($leaveRequest->type == 'vacation') {
-            $leaveType = '休暇';
-            } elseif ($leaveRequest->type == 'absence') {
-            $leaveType = '欠勤';
+        switch ($leaveRequest->type)  {
+            case 'paid_leave';
+                $leaveType = '有給休暇';
+                break;
+            case 'vacation';
+                $$leaveType = '休暇';
+                break;
+            case 'absent';
+                $leaveType = '欠勤';
+                break;
+            default;
+                $leaveType = '不明な申請';
+                break; 
+        }
+        
+        try {
+            //通知の作成
+            Notification::create([
+                'user_id' => $leaveRequest->user_id,
+                'type' => 'leavere_jected',
+                'message' => "($leaveRequest)申請が却下されました。理由: " . $leaveRequest->reject_comment,
+                'is_checked' => false,
+            ]);
+
+            log::info('通知が正常に作成されました',[
+                'user_id' => $LeaveRequest->use_id,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('通知の作成に失敗しました。',[
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()->back()->with('error', '申請の差し戻し中にエラーが発生しました。');
         }
 
-        // 通知の作成
-        Notification::create([
-            'user_id' => $leaveRequest->user_id,
-            'type' => 'leave_rejected', // ここでtypeを指定
-            'message' => "{$leaveType}申請が却下されました。理由: " . $leaveRequest->reject_comment,
-            'is_checked' => false,
+        Log::info('休暇申請が正常に却下されました。',[
+            'leave_request_id' => $id,
+            'status' => $leaveRequest->status,
+            'rejected_by' => auth()->user()->name,
         ]);
 
         return redirect()->back()->with('success', '申請を差し戻しました');
