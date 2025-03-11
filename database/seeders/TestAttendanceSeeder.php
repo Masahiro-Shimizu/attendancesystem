@@ -27,8 +27,8 @@ class TestAttendanceSeeder extends Seeder
     {
         // 2025年の祝日（例として一部を設定）
         return [
-            '2025-01-01', // 元旦
-            '2025-01-13', // 振替休日
+            '2025-02-11', // 元旦
+            '2025-02-24', // 振替休日
         ];
     }
 
@@ -39,8 +39,8 @@ class TestAttendanceSeeder extends Seeder
      */
     public function run()
     {
-        $startDate = Carbon::create(2025, 01, 1); // 生成の開始日
-        $endDate = Carbon::create(2025, 01, 31); // 生成の終了日
+        $startDate = Carbon::create(2025, 02, 1); // 生成の開始日
+        $endDate = Carbon::create(2025, 02, 28); // 生成の終了日
 
         $holidays = $this->getHolidays(); // 祝日リストを取得
 

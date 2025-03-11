@@ -5,6 +5,7 @@ use App\Http\Controllers\TimesController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminHomeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -151,4 +152,11 @@ Route::middleware(['auth'])->group(function() {
      */
     Route::post('/notifications/check/{id}', [NotificationController::class, 'check'])->name('notifications.check');
     Route::post('/notifications/mark-as-read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
+    /**
+     * プロフィールページのルート
+     */
+    Route::get('/profile/{id}',[ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
