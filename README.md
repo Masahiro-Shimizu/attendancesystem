@@ -46,7 +46,7 @@ https://github.com/user-attachments/assets/a3b398ca-af10-49e4-ab13-1927a50cd6ce
 ### 申請一覧
 https://github.com/user-attachments/assets/4aa541be-9b61-4373-b324-0af66d3b6ba8
 
-###　管理者ログイン画面
+### 管理者ログイン画面
 
 https://github.com/user-attachments/assets/b2ccb9e0-3783-4542-9200-657138f34a9a
 
