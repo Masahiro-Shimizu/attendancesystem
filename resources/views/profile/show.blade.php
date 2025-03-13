@@ -29,7 +29,7 @@
         </div>
 
         <button type="submit" class="btn btn-success">更新する</button>
-        <a href="{{ route('profile.show', ['id' => $user->id]) }}" class="btn btn-secondary">キャンセル</a>
+        <a href="{{ route('home', ['id' => $user->id]) }}" class="btn btn-secondary">キャンセル</a>
     </form>
 </div>
 @endsection
