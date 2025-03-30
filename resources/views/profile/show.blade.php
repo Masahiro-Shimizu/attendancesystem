@@ -2,34 +2,24 @@
 
 @section('content')
 <div class="container">
-    <h2>プロフィール編集</h2>
+    <h2>プロフィール情報</h2>
 
-    <form method="POST" action="{{ route('profile.update') }}">
-        @csrf
-        @method('PUT')
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-        <div class="form-group">
-            <label for="name">名前</label>
-            <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
-        </div>
+    <table class="table">
+        <tr>
+            <th>名前</th>
+            <td>{{ $user->name }}</td>
+        </tr>
+        <tr>
+            <th>メールアドレス</th>
+            <td>{{ $user->email }}</td>
+        </tr>
+    </table>
 
-        <div class="form-group">
-            <label for="email">メールアドレス</label>
-            <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
-        </div>
-
-        <div class="form-group">
-            <label for="password">新しいパスワード（変更する場合のみ入力）</label>
-            <input type="password" name="password" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label for="password_confirmation">新しいパスワード（確認）</label>
-            <input type="password" name="password_confirmation" class="form-control">
-        </div>
-
-        <button type="submit" class="btn btn-success">更新する</button>
-        <a href="{{ route('home', ['id' => $user->id]) }}" class="btn btn-secondary">キャンセル</a>
-    </form>
+    <a href="{{ route('profile.edit') }}" class="btn btn-primary">編集する</a>
+    <a href="{{ route('home') }}" class="btn btn-secondary">戻る</a>
 </div>
 @endsection
