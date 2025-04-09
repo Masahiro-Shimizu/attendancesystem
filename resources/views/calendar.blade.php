@@ -9,7 +9,11 @@
 
 @section('scripts')
 <script>
+    /**
+     * カレンダーの初期化と設定
+     */
     $(document).ready(function() {
+        // 日本語ロケール設定
         moment.updateLocale('ja', {
             months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
             monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
@@ -45,7 +49,7 @@
             }
         });
 
-
+        // FullCalendarの初期化
         $('#calendar').fullCalendar({
             locale: 'ja',  // 日本語化
             header: {
@@ -60,23 +64,30 @@
                 day: '日'
             },
             selectable: true,
+            /**
+             * 日付選択時の動作
+             * @param {object} start - 選択された開始日
+             */
             select: function(start) {
                 const selectedDate = start.format('YYYY-MM-DD');
+                
                 $.ajax({
-                    url: '/times/get-id-by-date',
+                    url: '/attendancesystem/public/times/get-id-by-date',
                     method: 'GET',
                     data: { date: selectedDate },
                     success: function(response) {
                         if (response.status === 'success') {
                             const id = response.data.id;
-                            console.log("Redirecting to:", `/times/detail/${id}`);
-                            window.location.href = `/times/detail/${id}`;
+                            window.location.href = `/attendancesystem/public/times/detail/${id}`;
                         } else {
                             alert(response.message);
                         }
                     },
-                    error: function() {
-                        alert('エラーが発生しました。');
+                    error: function(xhr, status, error) {
+                        console.log('Status:', status);
+                        console.log('Error:', error);
+                        console.log('Response:', xhr.responseText);
+                        alert('エラーが発生しました: ' + xhr.responseText);
                     }
                 });
             }

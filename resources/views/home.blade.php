@@ -14,26 +14,29 @@
                         <dd class="col-sm-9">{{ Auth::user()->id }}</dd>
                     </dl>
                     <div id="popup-message" style="display: none;" class="alert"></div>
-                    <h4>現在の日時</h4>
-                    <p id="current-date"></p>
-                    <p id="current-time"></p>
+                    <!-- 日時表示エリア　2/4修正 -->
+                    <div class="datetime-container">
+                        <h4>現在の日時</h4>
+                        <p id="current-date"></p>
+                        <p id="current-time"></p>
+                    </div>
 
                     <div class="button-group">
                         <form id="punchin-form" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-primary">出勤</button>
+                            <button type="submit" class="btn btn-success">出勤</button>
                         </form>
                         <form id="punchout-form" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-success">退勤</button>
+                            <button type="submit" class="btn btn-danger">退勤</button>
                         </form>
                         <form id="breakstart-form" method="POST" action="{{ route('break-start') }}">
                             @csrf
-                            <button type="submit" class="btn btn-info">休憩開始</button>
+                            <button type="submit" class="btn btn-custom-blue">休憩開始</button>
                         </form>
                         <form id="breakend-form" method="POST" action="{{ route('break-end') }}">
                             @csrf
-                            <button type="submit" class="btn btn-secondary">休憩終了</button>
+                            <button type="submit" class="btn btn-custom-orange text-white">休憩終了</button>
                         </form>
                     </div>
 
@@ -96,6 +99,30 @@
                 @endif
             </div>
             </div>
+
+<!-- 追加した CSS -->
+<style>
+    .datetime-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;  /* 水平方向の中央揃え */
+        justify-content: center; /* 垂直方向の中央揃え */
+        text-align: center;
+        margin-top: 20px; /* 上の要素との間隔 */
+        width: 100%; /* 幅を最大に */
+    }
+
+    #current-time {
+        font-size: 48px; /* 時刻を大きく */
+        font-weight: bold; /* 太字 */
+        margin-top: 10px;
+    }
+
+    #current-date {
+        font-size: 24px; /* 日付のフォントサイズ */
+    }
+</style>
+
 @endsection
 @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

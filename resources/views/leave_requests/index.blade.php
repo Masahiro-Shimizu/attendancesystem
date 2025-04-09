@@ -3,19 +3,23 @@
 @section('content')
 <div class="container">
     <h1>申請一覧</h1>
+
+    <!-- 申請データを表示するテーブル -->
     <table class="table">
         <thead>
             <tr>
-                <th>種類</th>
-                <th>開始日</th>
-                <th>終了日</th>
-                <th>理由</th>
-                <th>ステータス</th>
+                <th>種類</th> <!-- 申請タイプ -->
+                <th>開始日</th>  <!-- 開始日 -->
+                <th>終了日</th>  <!-- 終了日 -->
+                <th>理由</th> <!-- 理由 -->
+                <th>ステータス</th> <!-- ステータス -->
             </tr>
         </thead>
         <tbody>
+            <!-- 申請データのループ処理 -->
             @foreach ($leaveRequests as $request)
                 <tr>
+                    <!-- 申請タイプの判定 -->
                     <td>
                         @if ($request->type === 'paid_leave')
                             有給休暇
@@ -27,9 +31,14 @@
                             {{ $request->type }}
                         @endif
                     </td>
+                    <!-- 開始日 -->
                     <td>{{ $request->start_date }}</td>
+                    <!-- 終了日: 空の場合は "なし" -->
                     <td>{{ $request->end_date ?? 'なし' }}</td>
+                    <!-- 理由 -->
                     <td>{{ $request->reason }}</td>
+
+                    <!-- ステータスの判定 -->
                     <td>
                         @if ($request->status === 'pending')
                             保留中

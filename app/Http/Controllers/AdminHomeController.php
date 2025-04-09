@@ -89,13 +89,26 @@ class AdminHomeController extends Controller
      */
     public function history(Request $request,$year, $month)
     {
+        // デバッグ1: ここでリクエストの内容を確認
+        \Log::info('History method called', ['year' => $year, 'month' => $month, 'request' => $request->all()]);
+    
+        //パラメーターがない場合には現在の年月を設定
+        $year = $year ?? now()->year;
+        $month = $month ?? now()->month;
+
         // リクエストパラメータから送信された月を優先
         if ($request->has('month')) {
             [$year, $month] = explode('-', $request->input('month')); 
-
+        }
         // データ取得処理
-        $monthString = sprintf('%04d-%02d', $year, $month); // YYYY-MM形式に変換
-        $histories = ApprovalHistory::where('created_at', 'like', "$monthString%")->get();
+        //$monthString = sprintf('%04d-%02d', $year, $month); // YYYY-MM形式に変換
+        $histories = ApprovalHistory::whereYear('created_at', $year)
+                                    ->whereMonth('created_at', $month)
+                                    ->get();
+
+        // デバッグ用
+        \Log::info('Histories retrieved', ['histories' => $histories->toArray()]);
+
 
         // 日本語化処理
         foreach ($histories as $history) {
@@ -112,6 +125,5 @@ class AdminHomeController extends Controller
             'month' => $month,
             'noDataMessage' => $histories->isEmpty() ? '該当するデータがありません。' : null,
         ]);
-        }
     }
 }
